@@ -11,23 +11,23 @@
 <body>
   <main class="container">
     <h1>콘티 제작 도우미</h1>
-    <p class="subtitle">여러 곡의 섹션 흐름을 편집하고 A4 세로 PDF로 내보내기</p>
+    <p class="subtitle">곡 검색 → 악보 후보 선택 → 섹션 흐름 편집 → PDF 내보내기</p>
 
     <section class="panel">
-      <h2>곡 추가</h2>
+      <h2>1) 곡 검색 조건 입력</h2>
       <div class="row">
         <input id="songTitle" type="text" placeholder="곡 제목 (예: Amazing Grace)" />
         <input id="reference" type="text" placeholder="레퍼런스(연주자/버전)" />
-        <input id="key" type="text" placeholder="조성 (예: G maj)" />
-        <button id="addSongBtn">곡 추가</button>
+        <input id="key" type="text" placeholder="조성 (예: G maj) - 비우면 자동 추론" />
+        <button id="addSongBtn">곡 추가 및 후보 생성</button>
       </div>
     </section>
 
     <section class="panel">
-      <h2>곡 목록</h2>
+      <h2>2) 곡 목록 편집</h2>
       <div id="songs"></div>
       <div class="actions">
-        <button id="exportBtn" class="primary">A4 세로 PDF 내보내기</button>
+        <button id="exportBtn" class="primary">5) A4 세로 PDF 내보내기</button>
       </div>
     </section>
   </main>
@@ -42,8 +42,14 @@
         <button class="remove-btn">삭제</button>
       </header>
 
+      <div class="search-candidate-area">
+        <label>1-1/1-2) 자동 생성된 악보/레퍼런스 후보</label>
+        <div class="candidate-links"></div>
+        <p class="selected-candidate"></p>
+      </div>
+
       <div class="music-sheet-area">
-        <label>악보(이미지) 업로드</label>
+        <label>2) 선택 악보 파일 업로드(이미지)</label>
         <input type="file" class="sheet-input" accept="image/*" />
         <div class="sheet-preview-wrap">
           <img class="sheet-preview" alt="악보 미리보기" />
@@ -51,9 +57,9 @@
       </div>
 
       <div class="section-editor">
-        <p>섹션 토글:</p>
+        <p>3) 연주 섹션 토글:</p>
         <div class="chips"></div>
-        <label>흐름(순서) 편집 (드래그 대신 클릭 추가 방식)</label>
+        <label>곡 순서(흐름) 편집</label>
         <div class="sequence-builder">
           <select class="section-picker"></select>
           <button class="add-sequence">흐름에 추가</button>
@@ -63,7 +69,7 @@
       </div>
 
       <div class="requests">
-        <label>특별 요청사항</label>
+        <label>4) 특별 요청사항</label>
         <textarea class="request-text" rows="3" placeholder="예: 2절 후 바로 후렴, 드럼 브러쉬 사용"></textarea>
       </div>
     </article>

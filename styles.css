@@ -15,8 +15,8 @@ h1 { margin-bottom: 8px; }
   padding: 16px;
   margin-bottom: 16px;
 }
-.row { display: grid; grid-template-columns: 2fr 2fr 1fr auto; gap: 8px; }
-input, textarea, select, button {
+.row { display: grid; grid-template-columns: 2fr 2fr 1.3fr auto; gap: 8px; }
+input, textarea, select, button, .link-btn {
   font: inherit;
   padding: 8px 10px;
   border: 1px solid #cdd3e1;
@@ -28,6 +28,12 @@ button.primary { background: #2f5cff; color: white; border-color: #2f5cff; }
 .song-card header { display: flex; justify-content: space-between; align-items: center; }
 .song-meta { color: #606b85; margin: 0; }
 .remove-btn { background: #fff1f1; border-color: #ffc9c9; }
+.search-candidate-area { background: #fafbff; border: 1px solid #e5e9f8; padding: 10px; border-radius: 10px; margin-bottom: 10px; }
+.candidate-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 1px dashed #ccd5f1; border-radius: 8px; padding: 8px; margin-top: 8px; }
+.candidate-item p { margin: 4px 0 0; color: #5f6b8a; font-size: 13px; }
+.candidate-actions { display: flex; gap: 6px; }
+.link-btn { text-decoration: none; background: #fff; color: #203579; display: inline-flex; align-items: center; }
+.selected-candidate { margin: 10px 0 0; color: #2d3f7a; font-weight: 600; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
 .chip { border-radius: 999px; padding: 6px 12px; border: 1px solid #c8d0ea; }
 .chip.active { background: #2f5cff; color: #fff; border-color: #2f5cff; }
@@ -38,4 +44,5 @@ button.primary { background: #2f5cff; color: white; border-color: #2f5cff; }
 .actions { display: flex; justify-content: flex-end; }
 @media (max-width: 900px) {
   .row { grid-template-columns: 1fr; }
+  .candidate-item { flex-direction: column; align-items: flex-start; }
 }
