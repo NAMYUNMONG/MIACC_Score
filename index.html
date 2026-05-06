@@ -1,78 +1,12 @@
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>콘티 제작 도우미</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script defer src="app.js"></script>
-</head>
-<body>
-  <main class="container">
-    <h1>콘티 제작 도우미</h1>
-    <p class="subtitle">곡 검색 → 악보 후보 선택 → 섹션 흐름 편집 → PDF 내보내기</p>
-
-    <section class="panel">
-      <h2>1) 곡 검색 조건 입력</h2>
-      <div class="row">
-        <input id="songTitle" type="text" placeholder="곡 제목 (예: Amazing Grace)" />
-        <input id="reference" type="text" placeholder="레퍼런스(연주자/버전)" />
-        <input id="key" type="text" placeholder="조성 (예: G maj) - 비우면 자동 추론" />
-        <button id="addSongBtn">곡 추가 및 후보 생성</button>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>2) 곡 목록 편집</h2>
-      <div id="songs"></div>
-      <div class="actions">
-        <button id="exportBtn" class="primary">5) A4 세로 PDF 내보내기</button>
-      </div>
-    </section>
-  </main>
-
-  <template id="songTemplate">
-    <article class="song-card">
-      <header>
-        <div>
-          <h3 class="song-title"></h3>
-          <p class="song-meta"></p>
-        </div>
-        <button class="remove-btn">삭제</button>
-      </header>
-
-      <div class="search-candidate-area">
-        <label>1-1/1-2) 자동 생성된 악보/레퍼런스 후보</label>
-        <div class="candidate-links"></div>
-        <p class="selected-candidate"></p>
-      </div>
-
-      <div class="music-sheet-area">
-        <label>2) 선택 악보 파일 업로드(이미지)</label>
-        <input type="file" class="sheet-input" accept="image/*" />
-        <div class="sheet-preview-wrap">
-          <img class="sheet-preview" alt="악보 미리보기" />
-        </div>
-      </div>
-
-      <div class="section-editor">
-        <p>3) 연주 섹션 토글:</p>
-        <div class="chips"></div>
-        <label>곡 순서(흐름) 편집</label>
-        <div class="sequence-builder">
-          <select class="section-picker"></select>
-          <button class="add-sequence">흐름에 추가</button>
-          <button class="clear-sequence">흐름 초기화</button>
-        </div>
-        <p class="sequence-output">흐름: -</p>
-      </div>
-
-      <div class="requests">
-        <label>4) 특별 요청사항</label>
-        <textarea class="request-text" rows="3" placeholder="예: 2절 후 바로 후렴, 드럼 브러쉬 사용"></textarea>
-      </div>
-    </article>
-  </template>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>악보 콘티 작성</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
