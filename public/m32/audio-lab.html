@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MIACC · M32 Audio Lab</title>
+<style>
+:root{--bg:#0e0f10;--panel:#17191c;--panel2:#202329;--edge:#343942;--ink:#f2f3f4;--muted:#aeb4bb;--gold:#d6ae45;--gold2:#f0cb6b;--green:#59c27a;--red:#e15d62}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;line-height:1.6}
+.wrap{max-width:1180px;margin:auto;padding:26px}.hero{padding:38px 0 26px;border-bottom:1px solid var(--edge)}
+.eyebrow{font:700 12px ui-monospace,monospace;letter-spacing:1.7px;color:var(--gold2)}h1{font-size:38px;line-height:1.15;margin:10px 0}h2{margin:8px 0 12px}.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:24px 0}.card,.lab{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:18px}
+.card h3{margin:6px 0}.tag{display:inline-block;border:1px solid #6d5b25;border-radius:999px;padding:3px 9px;color:var(--gold2);font:700 11px ui-monospace,monospace}
+.ok{color:var(--green)}.warn{color:var(--gold2)}a{color:var(--gold2)}
+button,.btn{background:#2a2415;color:var(--gold2);border:1px solid #6d5b25;border-radius:8px;padding:9px 12px;cursor:pointer;font:inherit}.btn input{display:none}
+button.active{background:#4a3b12;border-color:var(--gold2)}button:disabled{opacity:.45;cursor:not-allowed}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0}.fileName{font-size:13px;color:var(--muted)}
+.lab{margin-top:24px}.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.module{background:var(--panel2);border:1px solid var(--edge);border-radius:12px;padding:14px}
+.row{display:grid;grid-template-columns:160px 1fr 78px;gap:10px;align-items:center;margin:9px 0}.row small{color:var(--muted)}
+input[type=range]{width:100%}.meter{height:11px;background:#0b0c0d;border:1px solid var(--edge);border-radius:99px;overflow:hidden}.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#59c27a,#d6ae45,#e15d62)}
+.meters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.meterBox{background:#111315;border:1px solid var(--edge);border-radius:9px;padding:9px}.meterBox b{display:block;font-size:11px;margin-bottom:6px}
+.sig{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:14px 0}.box{padding:7px 9px;border:1px solid var(--edge);border-radius:8px;background:var(--panel2)}.gold{border-color:#6d5b25;color:var(--gold2)}
+.note{background:#202329;border-left:3px solid var(--gold);padding:12px 14px;border-radius:8px;margin:14px 0}.danger{border-left-color:var(--red)}
+.eqgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.eqband{border:1px solid var(--edge);border-radius:10px;padding:10px;background:#15171a}.eqband h4{margin:0 0 8px;color:var(--gold2)}
+footer{margin-top:38px;padding:20px 0;color:var(--muted);border-top:1px solid var(--edge);font-size:13px}
+@media(max-width:900px){.cols,.grid{grid-template-columns:1fr}.eqgrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.row{grid-template-columns:1fr}.meters,.eqgrid{grid-template-columns:1fr}.wrap{padding:16px}h1{font-size:31px}}
+</style>
+</head>
+<body><main class="wrap">
+<section class="hero">
+<div class="eyebrow">MIACC · MIDAS M32</div><h1>M32 Output Hub</h1>
+<p><a href="./index.html">← M32 Output Hub로 돌아가기</a></p>
+<p class="muted">교회 예배·찬양팀용 M32 자료와 실제 음원 기반 Interactive Lab을 한 곳에서 연습합니다.</p>
+<div class="note"><b class="ok">브라우저 로컬 처리</b> — 선택한 MP3/WAV는 GitHub 서버로 업로드되지 않고 현재 브라우저 안에서만 재생·처리됩니다.</div>
+</section>
+
+<section class="grid">
+<article class="card"><span class="tag">CORE</span><h3>M32 교회 운영 매뉴얼</h3><p class="muted">Routing, Bus, P16, 예배 운용 중심 메인 매뉴얼.</p><p class="warn">문서 연결은 계속 정리 중입니다.</p></article>
+<article class="card"><span class="tag">FOH</span><h3>FOH Live Mixing Guide</h3><p class="muted">Gain Staging, Full Band Mix, 긴급 대응 중심.</p><p class="warn">문서 연결은 계속 정리 중입니다.</p></article>
+<article class="card"><span class="tag">FX</span><h3>FX Setup Guide</h3><p class="muted">FX Send/Return, Bus Master, FX Return 운용.</p><p class="ok">아래 Audio Lab에서 실제 소리로 실습 가능</p></article>
+<article class="card"><span class="tag">SCENE</span><h3>11AM User Routing V2</h3><p class="muted">11시 예배용 User Routing 기반 Scene.</p><p class="warn">다운로드 연결은 계속 정리 중입니다.</p></article>
+</section>
+
+<section class="lab">
+<div class="eyebrow">M32 INTERACTIVE AUDIO LAB</div><h2>실제 음원으로 EQ · Gate · Compressor · FX 연습</h2>
+<p class="muted">교육용 Web Audio 시뮬레이터입니다. 신호 흐름과 파라미터의 청감 변화를 익히는 용도이며 M32 DSP 알고리즘의 bit-exact 복제는 아닙니다.</p>
+
+<div class="toolbar">
+<label class="btn">음원 선택<input id="fileInput" type="file" accept="audio/*"></label>
+<button id="micBtn">마이크 사용</button>
+<button id="playBtn" disabled>Play</button>
+<button id="pauseBtn" disabled>Pause</button>
+<button id="loopBtn">Loop: ON</button>
+<button id="bypassBtn">Monitor: PROCESSED</button>
+<span id="fileName" class="fileName">음원을 선택하거나 마이크를 사용하세요.</span>
+</div>
+
+<audio id="player" crossorigin="anonymous"></audio>
+
+<div class="sig"><span class="box">SOURCE</span>→<span class="box gold">GATE</span>→<span class="box gold">4-BAND EQ</span>→<span class="box gold">COMP</span>→<span class="box">CHANNEL FADER</span>→<span class="box">MAIN</span><span>＋</span><span class="box gold">FX SEND</span>→<span class="box gold">REVERB</span>→<span class="box">FX RETURN</span></div>
+
+<div class="meters">
+<div class="meterBox"><b>INPUT</b><div class="meter"><i id="mInput"></i></div></div>
+<div class="meterBox"><b>POST GATE</b><div class="meter"><i id="mGate"></i></div></div>
+<div class="meterBox"><b>POST COMP</b><div class="meter"><i id="mComp"></i></div></div>
+<div class="meterBox"><b>MAIN DRY</b><div class="meter"><i id="mDry"></i></div></div>
+<div class="meterBox"><b>FX RETURN</b><div class="meter"><i id="mFx"></i></div></div>
+<div class="meterBox"><b>MAIN OUT</b><div class="meter"><i id="mMain"></i></div></div>
+</div>
+
+<div class="cols" style="margin-top:14px">
+<div class="module">
+<h3>Gate</h3>
+<div class="row"><label>Threshold</label><input id="gateTh" type="range" min="-80" max="0" value="-80"><output id="gateThV"></output></div>
+<div class="row"><label>Range</label><input id="gateRange" type="range" min="-80" max="0" value="-35"><output id="gateRangeV"></output></div>
+<div class="row"><label>Attack</label><input id="gateAttack" type="range" min="1" max="200" value="12"><output id="gateAttackV"></output></div>
+<div class="row"><label>Release</label><input id="gateRelease" type="range" min="20" max="1500" value="250"><output id="gateReleaseV"></output></div>
+</div>
+
+<div class="module">
+<h3>Compressor</h3>
+<div class="row"><label>Threshold</label><input id="compTh" type="range" min="-60" max="0" value="-18"><output id="compThV"></output></div>
+<div class="row"><label>Ratio</label><input id="compRatio" type="range" min="1" max="20" step=".5" value="3"><output id="compRatioV"></output></div>
+<div class="row"><label>Attack</label><input id="compAttack" type="range" min="1" max="100" value="15"><output id="compAttackV"></output></div>
+<div class="row"><label>Release</label><input id="compRelease" type="range" min="20" max="1200" value="180"><output id="compReleaseV"></output></div>
+<div class="row"><label>Knee</label><input id="compKnee" type="range" min="0" max="40" value="20"><output id="compKneeV"></output></div>
+<div class="row"><label>Makeup</label><input id="makeup" type="range" min="-12" max="18" step=".5" value="0"><output id="makeupV"></output></div>
+<div class="note"><b>Gain Reduction:</b> <span id="grV">0.0 dB</span></div>
+</div>
+</div>
+
+<div class="module" style="margin-top:14px">
+<h3>4-Band Parametric EQ</h3>
+<div class="eqgrid">
+<div class="eqband"><h4>LOW</h4><div class="row"><label>Freq</label><input id="eq1f" type="range" min="40" max="500" value="120"><output id="eq1fV"></output></div><div class="row"><label>Gain</label><input id="eq1g" type="range" min="-15" max="15" step=".5" value="0"><output id="eq1gV"></output></div><div class="row"><label>Q</label><input id="eq1q" type="range" min=".3" max="8" step=".1" value="1"><output id="eq1qV"></output></div></div>
+<div class="eqband"><h4>LOW MID</h4><div class="row"><label>Freq</label><input id="eq2f" type="range" min="100" max="2000" value="350"><output id="eq2fV"></output></div><div class="row"><label>Gain</label><input id="eq2g" type="range" min="-15" max="15" step=".5" value="0"><output id="eq2gV"></output></div><div class="row"><label>Q</label><input id="eq2q" type="range" min=".3" max="8" step=".1" value="1.4"><output id="eq2qV"></output></div></div>
+<div class="eqband"><h4>HIGH MID</h4><div class="row"><label>Freq</label><input id="eq3f" type="range" min="500" max="8000" value="2500"><output id="eq3fV"></output></div><div class="row"><label>Gain</label><input id="eq3g" type="range" min="-15" max="15" step=".5" value="0"><output id="eq3gV"></output></div><div class="row"><label>Q</label><input id="eq3q" type="range" min=".3" max="8" step=".1" value="1.2"><output id="eq3qV"></output></div></div>
+<div class="eqband"><h4>HIGH</h4><div class="row"><label>Freq</label><input id="eq4f" type="range" min="2000" max="16000" value="8000"><output id="eq4fV"></output></div><div class="row"><label>Gain</label><input id="eq4g" type="range" min="-15" max="15" step=".5" value="0"><output id="eq4gV"></output></div><div class="row"><label>Q</label><input id="eq4q" type="range" min=".3" max="8" step=".1" value=".8"><output id="eq4qV"></output></div></div>
+</div>
+<div class="toolbar"><button id="eqFlat">EQ Flat</button><button id="vocalPreset">Vocal Start</button><button id="mudPreset">Mud Cut</button><button id="presencePreset">Presence</button></div>
+</div>
+
+<div class="cols" style="margin-top:14px">
+<div class="module">
+<h3>Channel / FX Send</h3>
+<div class="row"><label>Channel Fader</label><input id="fader" type="range" min="-60" max="10" step=".5" value="0"><output id="faderV"></output></div>
+<div class="row"><label>FX Send</label><input id="send" type="range" min="-60" max="10" step=".5" value="-12"><output id="sendV"></output></div>
+<div class="row"><label>FX Bus Master</label><input id="bus" type="range" min="-60" max="10" step=".5" value="0"><output id="busV"></output></div>
+<button id="tapBtn">FX Tap: POST-FADER</button>
+<div id="tapExplain" class="note"></div>
+</div>
+
+<div class="module">
+<h3>Reverb / Return</h3>
+<div class="row"><label>Preset</label><select id="verbPreset"><option value="hall">Hall</option><option value="plate">Plate</option><option value="room">Room</option></select><span></span></div>
+<div class="row"><label>Decay</label><input id="decay" type="range" min=".3" max="6" step=".1" value="2.4"><output id="decayV"></output></div>
+<div class="row"><label>FX Return</label><input id="ret" type="range" min="-60" max="10" step=".5" value="-5"><output id="retV"></output></div>
+<div class="note">FX Send → Bus Master → Reverb → FX Return 순서로 레벨을 움직이며 어느 지점이 전체 Wet 양에 영향을 주는지 비교하세요.</div>
+</div>
+</div>
+
+<div class="note danger"><b>청력 보호:</b> 처음에는 컴퓨터/헤드폰 볼륨을 낮게 두고 시작하세요. Makeup, EQ Boost, FX Return을 동시에 크게 올리면 출력이 급격히 커질 수 있습니다.</div>
+</section>
+
+<footer>MIACC · MIDAS M32 Pages Hub · 실제 오디오 처리는 Web Audio API 기반 교육용 근사입니다.</footer>
+</main>
+<script src="./audio-lab.js"></script>
+</body></html>

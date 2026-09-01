@@ -10,14 +10,16 @@ const fmtDb=v=>Number(v).toFixed(Number(v)%1?1:0)+" dB";
 const setText=(id,v)=>{$(id).textContent=v};
 function ensureCtx(){
  if(ctx)return;
+ if(!window.AudioContext&&!window.webkitAudioContext)throw new Error("이 브라우저는 Web Audio API를 지원하지 않습니다.");
  ctx=new (window.AudioContext||window.webkitAudioContext)();
  inputAnalyser=ctx.createAnalyser();gateAnalyser=ctx.createAnalyser();compAnalyser=ctx.createAnalyser();dryAnalyser=ctx.createAnalyser();fxAnalyser=ctx.createAnalyser();mainAnalyser=ctx.createAnalyser();
  [inputAnalyser,gateAnalyser,compAnalyser,dryAnalyser,fxAnalyser,mainAnalyser].forEach(a=>{a.fftSize=1024;a.smoothingTimeConstant=.75});
- gateGain=ctx.createGain();
+ gateGain=ctx.createGain();gateGain.gain.value=1;
  eq=[0,1,2,3].map(()=>ctx.createBiquadFilter());
  eq.forEach(f=>f.type="peaking");
  comp=ctx.createDynamicsCompressor();
  makeupGain=ctx.createGain();faderGain=ctx.createGain();sendGain=ctx.createGain();busGain=ctx.createGain();convolver=ctx.createConvolver();returnGain=ctx.createGain();mainMix=ctx.createGain();processedGain=ctx.createGain();rawGain=ctx.createGain();master=ctx.createGain();
+ processedGain.gain.value=1;rawGain.gain.value=0;
  master.gain.value=.65;
  inputAnalyser.connect(gateGain);
  gateGain.connect(gateAnalyser);gateAnalyser.connect(eq[0]);eq[0].connect(eq[1]);eq[1].connect(eq[2]);eq[2].connect(eq[3]);eq[3].connect(comp);comp.connect(compAnalyser);compAnalyser.connect(makeupGain);makeupGain.connect(faderGain);faderGain.connect(dryAnalyser);dryAnalyser.connect(mainMix);
@@ -27,6 +29,7 @@ function ensureCtx(){
 }
 function connectSource(node){
  ensureCtx();
+ if(sourceNode===node)return;
  if(sourceNode){try{sourceNode.disconnect()}catch(e){}}
  sourceNode=node;
  sourceNode.connect(inputAnalyser);
@@ -48,6 +51,7 @@ function useFile(file){
 async function useMic(){
  ensureCtx();
  try{
+  await ctx.resume();
   if(micStream)micStream.getTracks().forEach(t=>t.stop());
   micStream=await navigator.mediaDevices.getUserMedia({audio:true});
   micNode=ctx.createMediaStreamSource(micStream);
@@ -124,9 +128,9 @@ function startMeters(){
   raf=requestAnimationFrame(tick);
  };tick();
 }
-$("fileInput").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0];if(f)useFile(f)});
+$("fileInput").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0];if(f)try{useFile(f)}catch(error){setText("fileName","오디오 초기화 실패: "+error.message);alert("오디오 그래프를 초기화할 수 없습니다: "+error.message)}});
 $("micBtn").onclick=useMic;
-$("playBtn").onclick=async()=>{ensureCtx();await ctx.resume();player.play()};
+$("playBtn").onclick=async()=>{try{ensureCtx();await ctx.resume();await player.play()}catch(e){setText("fileName","오디오 재생 실패: "+e.message);alert("오디오를 재생할 수 없습니다: "+e.message)}};
 $("pauseBtn").onclick=()=>player.pause();
 $("loopBtn").onclick=()=>{player.loop=!player.loop;$("loopBtn").textContent="Loop: "+(player.loop?"ON":"OFF")};
 $("bypassBtn").onclick=()=>{monitorProcessed=!monitorProcessed;updateMonitor()};

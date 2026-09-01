@@ -8,3 +8,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 vite-dev*.log
+
+# Rebuilt from m32-pages-assets during npm run build
+public/m32/MIACC_M32_11AM_UserRouting_V2.scn
+public/m32/MIDAS_M32_Church_Appendix_V1.html
+public/m32/MIDAS_M32_Church_Manual_V1.html
+public/m32/MIDAS_M32_FX_Setup_Guide_Church_V2.html

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "node scripts/build-m32-pages.mjs",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/check-m32-pages.mjs",
+    "check:m32": "node scripts/check-m32-pages.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
