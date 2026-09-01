@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MIACC · MIDAS M32 Hub</title>
+<style>
+:root{--bg:#0e0f10;--panel:#17191c;--panel2:#202329;--edge:#343942;--ink:#f2f3f4;--muted:#aeb4bb;--gold:#d6ae45;--gold2:#f0cb6b;--green:#59c27a;--red:#e15d62}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;line-height:1.65}
+.wrap{max-width:1120px;margin:auto;padding:28px}.hero{padding:42px 0 28px;border-bottom:1px solid var(--edge)}
+.eyebrow{font:700 12px ui-monospace,monospace;letter-spacing:1.7px;color:var(--gold2)}h1{font-size:38px;line-height:1.15;margin:10px 0}.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:24px 0}.card{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:18px}
+.card h3{margin:6px 0}.tag{display:inline-block;border:1px solid #6d5b25;border-radius:999px;padding:3px 9px;color:var(--gold2);font:700 11px ui-monospace,monospace}
+.ok{color:var(--green)}.warn{color:var(--gold2)}a{color:var(--gold2)}button{background:#2a2415;color:var(--gold2);border:1px solid #6d5b25;border-radius:8px;padding:9px 12px;cursor:pointer}
+.lab{margin-top:32px;background:var(--panel);border:1px solid var(--edge);border-radius:16px;padding:20px}.row{display:grid;grid-template-columns:180px 1fr 80px;gap:12px;align-items:center;margin:10px 0}
+input[type=range]{width:100%}.meter{height:12px;background:#0b0c0d;border:1px solid var(--edge);border-radius:99px;overflow:hidden}.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#59c27a,#d6ae45,#e15d62)}
+.sig{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0}.box{padding:8px 10px;border:1px solid var(--edge);border-radius:8px;background:var(--panel2)}.gold{border-color:#6d5b25;color:var(--gold2)}
+.note{background:#202329;border-left:3px solid var(--gold);padding:12px 14px;border-radius:8px;margin:15px 0}
+footer{margin-top:40px;padding:20px 0;color:var(--muted);border-top:1px solid var(--edge);font-size:13px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.wrap{padding:18px}h1{font-size:31px}}
+</style>
+</head>
+<body><main class="wrap">
+<section class="hero"><div class="eyebrow">MIACC · MIDAS M32</div><h1>M32 Output Hub</h1>
+<p class="muted">교회 예배·찬양팀용 M32 자료와 Interactive Lab을 한 곳에서 관리하기 위한 GitHub Pages 허브입니다.</p>
+<div class="note"><b class="ok">페이지 복구 완료</b> — GitHub Pages의 <code>/MIACC_Score/m32/</code> 경로가 실제 배포 파일을 갖도록 구성했습니다.</div></section>
+
+<section class="grid">
+<article class="card"><span class="tag">CORE</span><h3>M32 교회 운영 매뉴얼</h3><p class="muted">채널 스트립, Bus, Routing, P16, 예배 운용 중심 메인 매뉴얼.</p><p class="warn">문서 파일은 Pages 이관 작업 중입니다.</p></article>
+<article class="card"><span class="tag">FOH</span><h3>FOH Live Mixing Guide</h3><p class="muted">Line Check, Gain Staging, Full Band Mix, 긴급 대응까지 FOH 실전 가이드.</p><p class="warn">문서 파일은 Pages 이관 작업 중입니다.</p></article>
+<article class="card"><span class="tag">FX</span><h3>FX Setup Guide</h3><p class="muted">FX Send/Return, Bus Master, FX Return, Reverb/Delay 세팅 가이드.</p><p class="warn">문서 파일은 Pages 이관 작업 중입니다.</p></article>
+<article class="card"><span class="tag">SCENE</span><h3>11AM User Routing V2</h3><p class="muted">11시 예배용 User Routing 기반 Scene.</p><p class="warn">Scene 파일은 Pages 이관 작업 중입니다.</p></article>
+</section>
+
+<section class="lab"><div class="eyebrow">INTERACTIVE LAB · FX SEND / RETURN</div><h2>Post-Fader / Pre-Fader 체험</h2>
+<p class="muted">Channel Fader, FX Send, Bus Master, FX Return의 관계를 직접 움직여 확인할 수 있습니다.</p>
+<div class="sig"><span class="box">Input</span>→<span class="box">Fader</span>→<span class="box gold">FX Send</span>→<span class="box gold">Bus Master</span>→<span class="box gold">Reverb</span>→<span class="box">FX Return</span>→<span class="box">Main LR</span></div>
+<div><button id="tapBtn">현재: POST-FADER</button></div>
+<div class="row"><label>Channel Fader</label><input id="fader" type="range" min="-60" max="10" value="0"><output id="faderV">0 dB</output></div>
+<div class="row"><label>FX Send</label><input id="send" type="range" min="-60" max="10" value="-12"><output id="sendV">-12 dB</output></div>
+<div class="row"><label>FX Bus Master</label><input id="bus" type="range" min="-60" max="10" value="0"><output id="busV">0 dB</output></div>
+<div class="row"><label>FX Return</label><input id="ret" type="range" min="-60" max="10" value="-5"><output id="retV">-5 dB</output></div>
+<div class="row"><label>Dry Meter</label><div class="meter"><i id="dryM"></i></div><output id="dryV"></output></div>
+<div class="row"><label>FX Meter</label><div class="meter"><i id="fxM"></i></div><output id="fxV"></output></div>
+<div id="explain" class="note"></div>
+</section>
+
+<section class="lab"><div class="eyebrow">INTERACTIVE LAB · CHANNEL STRIP</div><h2>EQ · Gate · Compressor</h2>
+<p class="muted">교육용 개념 시뮬레이터입니다. 실제 M32 DSP 알고리즘을 1:1로 복제한 것은 아닙니다.</p>
+<div class="row"><label>EQ Gain</label><input id="eq" type="range" min="-15" max="15" step=".5" value="0"><output id="eqV">0 dB</output></div>
+<div class="row"><label>Gate Threshold</label><input id="gate" type="range" min="-80" max="0" value="-40"><output id="gateV">-40 dB</output></div>
+<div class="row"><label>Comp Threshold</label><input id="comp" type="range" min="-60" max="0" value="-18"><output id="compV">-18 dB</output></div>
+<div class="row"><label>Comp Ratio</label><input id="ratio" type="range" min="1" max="10" step=".5" value="3"><output id="ratioV">3:1</output></div>
+<div class="note" id="stripExplain"></div>
+</section>
+
+<footer>MIACC · MIDAS M32 Pages Hub · Repository: NAMYUNMONG/MIACC_Score</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let post=true;
+const db=v=>Number(v).toFixed(Number(v)%1?1:0)+' dB';
+const width=v=>Math.max(0,Math.min(100,(Number(v)+60)/70*100));
+function updateFx(){
+ const f=+$('fader').value,s=+$('send').value,b=+$('bus').value,r=+$('ret').value;
+ $('faderV').textContent=db(f);$('sendV').textContent=db(s);$('busV').textContent=db(b);$('retV').textContent=db(r);
+ const dry=f, fx=(post?f:0)+s+b+r;
+ $('dryM').style.width=width(dry)+'%';$('fxM').style.width=width(fx)+'%';
+ $('dryV').textContent=db(dry);$('fxV').textContent=db(fx);
+ $('explain').innerHTML=post
+ ? '<b>POST-FADER:</b> Channel Fader를 내리면 Dry와 FX Send가 함께 감소합니다. 일반적인 Reverb/Delay Send에 권장되는 방식입니다.'
+ : '<b>PRE-FADER:</b> Channel Fader를 내려도 FX Send는 유지됩니다. 모니터에는 유용하지만 일반 FX Send에서는 주의가 필요합니다.';
+}
+$('tapBtn').onclick=()=>{post=!post;$('tapBtn').textContent='현재: '+(post?'POST-FADER':'PRE-FADER');updateFx()};
+['fader','send','bus','ret'].forEach(id=>$(id).oninput=updateFx);updateFx();
+function updateStrip(){
+ const e=+$('eq').value,g=+$('gate').value,c=+$('comp').value,r=+$('ratio').value;
+ $('eqV').textContent=db(e);$('gateV').textContent=db(g);$('compV').textContent=db(c);$('ratioV').textContent=r.toFixed(1)+':1';
+ $('stripExplain').innerHTML='<b>EQ</b> '+(e===0?'Flat':e>0?'선택 대역 Boost':'선택 대역 Cut')+
+ ' · <b>Gate</b> 입력이 '+g+' dB 아래면 감쇠 대상으로 판단 · <b>Compressor</b> '+c+' dB 초과 신호를 약 '+r.toFixed(1)+':1 비율로 제어';
+}
+['eq','gate','comp','ratio'].forEach(id=>$(id).oninput=updateStrip);updateStrip();
+</script></body></html>
