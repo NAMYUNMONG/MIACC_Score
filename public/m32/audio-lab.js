@@ -21,7 +21,7 @@ function ensureCtx(){
  master.gain.value=.65;
  gateAnalyser.connect(gateGain);
  gateGain.connect(eq[0]);eq[0].connect(eq[1]);eq[1].connect(eq[2]);eq[2].connect(eq[3]);eq[3].connect(comp);comp.connect(compAnalyser);compAnalyser.connect(makeupGain);makeupGain.connect(faderGain);faderGain.connect(dryAnalyser);dryAnalyser.connect(mainMix);
- busGain.connect(convolver);convolver.connect(returnGain);returnGain.connect(fxAnalyser);fxAnalyser.connect(mainMix);
+ sendGain.connect(busGain);busGain.connect(convolver);convolver.connect(returnGain);returnGain.connect(fxAnalyser);fxAnalyser.connect(mainMix);
  mainMix.connect(mainAnalyser);mainAnalyser.connect(processedGain);processedGain.connect(master);rawGain.connect(master);master.connect(ctx.destination);
  rebuildTap();updateAll();startMeters();
 }
@@ -29,7 +29,7 @@ function connectSource(node){
  ensureCtx();
  if(sourceNode){try{sourceNode.disconnect()}catch(e){}}
  sourceNode=node;
- sourceNode.connect(inputAnalyser);inputAnalyser.connect(gateAnalyser);
+ sourceNode.connect(inputAnalyser);
  sourceNode.connect(rawGain);
  sourceKind=node===micNode?"mic":"file";
  updateMonitor();
