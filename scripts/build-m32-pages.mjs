@@ -32,7 +32,7 @@ for (const name of names) {
   groups.get(key).push({ name, index: Number(m[2]) });
 }
 for (const [key, parts] of groups) {
-  parts.sort((a, b) => a.index - b.index);
+  parts.sort((a, b) => a.index - b.index || a.suffix.localeCompare(b.suffix));
   const b64 = parts
     .map((p) => fs.readFileSync(path.join(srcDir, p.name), "utf8").trim())
     .join("");
