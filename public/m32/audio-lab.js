@@ -19,8 +19,8 @@ function ensureCtx(){
  comp=ctx.createDynamicsCompressor();
  makeupGain=ctx.createGain();faderGain=ctx.createGain();sendGain=ctx.createGain();busGain=ctx.createGain();convolver=ctx.createConvolver();returnGain=ctx.createGain();mainMix=ctx.createGain();processedGain=ctx.createGain();rawGain=ctx.createGain();master=ctx.createGain();
  master.gain.value=.65;
- gateAnalyser.connect(gateGain);
- gateGain.connect(eq[0]);eq[0].connect(eq[1]);eq[1].connect(eq[2]);eq[2].connect(eq[3]);eq[3].connect(comp);comp.connect(compAnalyser);compAnalyser.connect(makeupGain);makeupGain.connect(faderGain);faderGain.connect(dryAnalyser);dryAnalyser.connect(mainMix);
+ inputAnalyser.connect(gateGain);
+ gateGain.connect(gateAnalyser);gateAnalyser.connect(eq[0]);eq[0].connect(eq[1]);eq[1].connect(eq[2]);eq[2].connect(eq[3]);eq[3].connect(comp);comp.connect(compAnalyser);compAnalyser.connect(makeupGain);makeupGain.connect(faderGain);faderGain.connect(dryAnalyser);dryAnalyser.connect(mainMix);
  sendGain.connect(busGain);busGain.connect(convolver);convolver.connect(returnGain);returnGain.connect(fxAnalyser);fxAnalyser.connect(mainMix);
  mainMix.connect(mainAnalyser);mainAnalyser.connect(processedGain);processedGain.connect(master);rawGain.connect(master);master.connect(ctx.destination);
  rebuildTap();updateAll();startMeters();
@@ -60,9 +60,8 @@ async function useMic(){
 function rebuildTap(){
  if(!ctx)return;
  try{faderGain.disconnect(sendGain)}catch(e){}
- try{compAnalyser.disconnect(sendGain)}catch(e){}
- if(postTap)faderGain.connect(sendGain);else compAnalyser.connect(sendGain);
- sendGain.connect(busGain);
+ try{makeupGain.disconnect(sendGain)}catch(e){}
+ if(postTap)faderGain.connect(sendGain);else makeupGain.connect(sendGain);
  $("tapBtn").textContent="FX Tap: "+(postTap?"POST-FADER":"PRE-FADER");
  $("tapExplain").innerHTML=postTap?"<b>POST-FADER:</b> Channel Fader를 내리면 Dry와 FX Send가 함께 감소합니다. 일반적인 Reverb/Delay Send의 기본적인 사고방식입니다.":"<b>PRE-FADER:</b> Channel Fader와 무관하게 FX Send가 유지됩니다. 모니터에는 유용하지만 일반 FX에서는 잔향만 남는 상황을 직접 확인해보세요.";
 }
