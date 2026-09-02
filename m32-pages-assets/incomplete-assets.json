@@ -2,6 +2,5 @@
   "251120_MIACC_M32_11AM.scn": "gzip checksum fails and the decoded tail is corrupted; no complete copy exists in any remote branch",
   "MIDAS_M32_Complete_Reset_Setup_Guide_MIACC_V1.html": "gzip checksum fails and the decoded HTML tail is corrupted; no complete copy exists in any remote branch",
   "MIDAS_M32_FOH_Live_Mixing_Guide_V1.html": "gzip deflate stream is corrupt; no complete copy exists in any remote branch",
-  "MIDAS_M32_FX_Setup_Guide_Church_V1.html": "gzip checksum fails, so the legacy document cannot be verified byte-for-byte",
-  "studiolive_manual.html": "the upload stops at chunk 003b and gunzip reports an unexpected end of file"
+  "MIDAS_M32_FX_Setup_Guide_Church_V1.html": "gzip checksum fails, so the legacy document cannot be verified byte-for-byte"
 }

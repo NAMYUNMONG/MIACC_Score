@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MIDAS M32 — FOH Live Mixing Guide for Church</title>
+<style>
+:root{
+  --bg:#0d0e0f; --panel:#141617; --panel2:#1a1d1f; --surface:#222629; --edge:#353a3e;
+  --ink:#f3f4f5; --muted:#adb4bb; --dim:#747d85; --gold:#d6ae45; --gold2:#f0cc70;
+  --green:#52c77a; --cyan:#5ab8c8; --red:#e15d62; --blue:#73a0d8; --violet:#a88ad8;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --shadow:0 16px 45px rgba(0,0,0,.34);
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.72;-webkit-font-smoothing:antialiased}
+a{color:inherit}.shell{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:100vh}
+nav{position:sticky;top:0;height:100vh;overflow:auto;background:linear-gradient(180deg,#151719 0%,#101214 100%);border-right:1px solid var(--edge);padding:22px 0 30px;z-index:20}
+.brand{padding:0 22px 18px;border-bottom:1px solid var(--edge);margin-bottom:8px}.brand .logo{font-size:14px;letter-spacing:5px;color:var(--gold2);font-weight:900}.brand .model{font-size:20px;font-weight:850;margin-top:4px}.brand .sub{font-size:11px;color:var(--dim);margin-top:2px}
+nav .grp{font-size:10px;letter-spacing:1.8px;color:var(--dim);font-weight:850;padding:17px 22px 5px;text-transform:uppercase}
+nav a{display:block;padding:7px 20px 7px 22px;text-decoration:none;color:var(--muted);font-size:13.1px;border-left:2px solid transparent;transition:.12s}nav a:hover{color:var(--ink);background:rgba(255,255,255,.025)}nav a.on{color:#fff;border-left-color:var(--gold);background:rgba(214,174,69,.08)}nav a .num{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-right:8px}.navfoot{padding:18px 22px 0;font-size:10.5px;color:var(--dim)}
+.links{padding:10px 22px 0}.links a{display:inline-block;border-left:0;padding:5px 8px;margin:3px 3px 0 0;border:1px solid var(--edge);border-radius:6px;font-size:10.5px;color:var(--muted)}
+main{max-width:1120px;min-width:0}.hero{padding:68px 60px 46px;border-bottom:1px solid var(--edge);background:radial-gradient(circle at 84% 14%,rgba(214,174,69,.11),transparent 30%),linear-gradient(180deg,#181a1c,transparent)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:2.2px;color:var(--gold2);text-transform:uppercase}.hero h1{font-size:42px;line-height:1.1;margin:12px 0 12px;letter-spacing:-1.1px}.hero p{max-width:800px;color:var(--muted);font-size:16px;margin:0}.specs{display:flex;gap:28px;flex-wrap:wrap;margin-top:30px}.spec .v{font-family:var(--mono);font-size:20px;font-weight:850;color:var(--gold2)}.spec .l{font-size:10.4px;text-transform:uppercase;letter-spacing:1px;color:var(--dim)}
+.inner{padding:44px 60px 110px}section{scroll-margin-top:10px}h2{font-size:27px;letter-spacing:-.45px;margin:60px 0 8px;padding-top:34px;border-top:1px solid var(--edge)}h2:first-of-type{border-top:0;padding-top:0;margin-top:6px}.kicker{display:block;font-family:var(--mono);font-size:11.4px;letter-spacing:1.8px;color:var(--gold);font-weight:700;margin-bottom:5px}h3{font-size:19px;margin:34px 0 9px}h4{font-size:15px;margin:25px 0 8px;color:var(--cyan)}p{color:#d1d6db;margin:12px 0}ul,ol{padding-left:22px}li{margin:7px 0;color:#d1d6db}b,strong{color:#fff}.en{font-family:var(--mono);font-size:.92em;color:var(--gold2)}
+.badge{display:inline-block;font-family:var(--mono);font-size:9.8px;letter-spacing:.5px;padding:2px 7px;border:1px solid var(--edge);border-radius:999px;margin-right:5px;color:var(--muted)}.badge.official{color:var(--gold2);border-color:rgba(214,174,69,.45);background:rgba(214,174,69,.06)}.badge.practice{color:var(--green);border-color:rgba(82,199,122,.4);background:rgba(82,199,122,.06)}.badge.priority{color:#fff;border-color:rgba(225,93,98,.48);background:rgba(225,93,98,.08)}
+.note{background:var(--panel2);border:1px solid var(--edge);border-left:3px solid var(--cyan);border-radius:10px;padding:15px 18px;margin:20px 0;font-size:14.2px}.note .lbl{display:block;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;font-weight:850;color:var(--cyan);margin-bottom:5px}.note.tip{border-left-color:var(--green)}.note.tip .lbl{color:var(--green)}.note.warn{border-left-color:var(--gold)}.note.warn .lbl{color:var(--gold2)}.note.danger{border-left-color:var(--red)}.note.danger .lbl{color:var(--red)}
+.flow{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:23px 18px;margin:24px 0;overflow-x:auto}.flowrow{display:flex;min-width:880px;align-items:stretch}.stage{flex:1;min-width:105px;position:relative;padding:5px 4px;cursor:pointer}.stage .box{height:100%;border:1.5px solid var(--edge);border-radius:9px;background:var(--surface);padding:14px 8px;text-align:center;transition:.15s}.stage:hover .box,.stage.act .box{border-color:var(--gold);background:#292d30;transform:translateY(-2px)}.stage.act .box{box-shadow:0 0 0 2px rgba(214,174,69,.15)}.stage .ic{font-size:20px}.stage .nm{font-size:11.6px;font-weight:800;margin-top:5px}.stage .arr{position:absolute;right:-2px;top:50%;transform:translateY(-50%);color:var(--dim)}.stage:last-child .arr{display:none}.flowinfo{margin-top:16px;background:#0b0d0e;border:1px solid var(--edge);border-radius:9px;padding:15px 17px;font-size:13.8px;min-height:78px}.flowinfo .t{font-weight:850;color:var(--gold2);margin-bottom:4px}.flowinfo .k{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:6px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}.cards.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card{border:1px solid var(--edge);border-radius:11px;background:var(--panel2);padding:15px 16px}.card .title{font-weight:850;color:#fff}.card .sub{font-size:11.3px;color:var(--gold2);font-family:var(--mono);margin:2px 0 8px}.card p{font-size:13.4px;margin:7px 0}.card ul{font-size:13.1px;margin:7px 0}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.6px}th,td{text-align:left;padding:10px 11px;border-bottom:1px solid var(--edge);vertical-align:top}th{font-size:10.4px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted)}td{color:#d1d6db}tr:hover td{background:rgba(255,255,255,.02)}
+.steps{list-style:none;padding:0;counter-reset:st}.steps li{counter-increment:st;position:relative;background:var(--panel2);border:1px solid var(--edge);border-radius:10px;padding:12px 14px 12px 52px;margin:9px 0}.steps li:before{content:counter(st);position:absolute;left:14px;top:11px;width:26px;height:26px;line-height:26px;text-align:center;background:var(--gold);color:#111;font-family:var(--mono);font-weight:900;border-radius:6px}
+.checkwrap{margin:20px 0;border:1px solid var(--edge);border-radius:12px;background:var(--panel);overflow:hidden}.checkhead{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid var(--edge);background:rgba(214,174,69,.035)}.checkhead strong{font-size:13.5px}.progress{display:flex;align-items:center;gap:8px;min-width:180px}.pbar{height:6px;background:#262a2d;border-radius:99px;overflow:hidden;flex:1}.pfill{height:100%;width:0;background:var(--gold);transition:.15s}.ptxt{font-family:var(--mono);font-size:10px;color:var(--dim);min-width:34px;text-align:right}.checklist{display:grid;gap:0}.ck{display:flex;gap:10px;align-items:flex-start;padding:10px 13px;border-bottom:1px solid rgba(53,58,62,.72)}.ck:last-child{border-bottom:0}.ck:hover{background:rgba(255,255,255,.018)}.ck input{accent-color:var(--gold);margin-top:5px}.ck label{font-size:13.4px;color:#d1d6db;cursor:pointer}.ck input:checked+label{color:#7e878f;text-decoration:line-through;text-decoration-color:#50575d}.reset{border:1px solid var(--edge);background:var(--surface);color:var(--muted);border-radius:6px;padding:5px 8px;font-size:10px;cursor:pointer}.reset:hover{color:#fff;border-color:#555}
+.matrix{display:grid;grid-template-columns:140px repeat(4,1fr);border:1px solid var(--edge);border-radius:10px;overflow:hidden;margin:18px 0}.matrix>div{padding:10px;border-right:1px solid var(--edge);border-bottom:1px solid var(--edge);font-size:12.5px;color:#d1d6db}.matrix>div:nth-child(5n){border-right:0}.matrix .mh{font-weight:850;color:#fff;background:#1c2023}.matrix .rowh{font-weight:780;color:var(--gold2);background:#171a1c}.matrix .hi{background:rgba(225,93,98,.07)}.matrix .mid{background:rgba(214,174,69,.05)}
+.decision{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:18px 0}.decision .d{border:1px solid var(--edge);border-radius:9px;background:var(--surface);padding:12px 10px;text-align:center;position:relative}.decision .d:not(:last-child):after{content:"→";position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--dim);z-index:2}.decision b{font-size:12.6px;display:block}.decision span{font-size:10.8px;color:var(--dim)}
+.kbd{display:inline-block;border:1px solid var(--edge);border-bottom-color:#52575e;background:var(--surface);border-radius:5px;padding:1px 7px;font-family:var(--mono);font-size:11px;color:#fff}
+details{border:1px solid var(--edge);border-radius:10px;background:var(--panel2);margin:12px 0;overflow:hidden}summary{list-style:none;cursor:pointer;padding:14px 17px;font-weight:780;font-size:14.2px}summary::-webkit-details-marker{display:none}summary:before{content:"+";color:var(--gold);font-family:var(--mono);font-size:18px;margin-right:9px}details[open] summary:before{content:"–"}.body{padding:0 17px 16px;font-size:13.7px;color:#d1d6db}
+.quick{position:sticky;bottom:16px;margin:30px 0 0;display:flex;justify-content:flex-end;pointer-events:none}.quick button{pointer-events:auto;border:1px solid rgba(214,174,69,.45);background:rgba(17,19,20,.94);backdrop-filter:blur(7px);color:var(--gold2);border-radius:999px;padding:9px 13px;font-size:11px;cursor:pointer;box-shadow:var(--shadow)}
+.sourcebox{border:1px solid rgba(214,174,69,.35);background:rgba(214,174,69,.045);border-radius:10px;padding:14px 16px;margin:22px 0;font-size:12.5px;color:var(--muted)}.footer{margin-top:70px;padding-top:24px;border-top:1px solid var(--edge);font-size:11.5px;color:var(--dim)}.footer a{color:var(--gold2);text-decoration:none}.topbtn{display:none}
+@media(max-width:980px){.shell{grid-template-columns:1fr}nav{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--edge)}nav .grp,nav>a,.navfoot,.links{display:none}.brand{border-bottom:0;margin:0}.topbtn{display:block;position:absolute;right:18px;top:20px;background:var(--surface);border:1px solid var(--edge);color:#fff;border-radius:8px;padding:7px 10px}.navopen .grp,.navopen>a,.navopen .navfoot,.navopen .links{display:block}.hero,.inner{padding-left:24px;padding-right:24px}.hero h1{font-size:34px}.cards,.cards.three{grid-template-columns:1fr}.decision{grid-template-columns:1fr}.decision .d:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-15px;transform:translateX(50%)}.matrix{display:block;overflow-x:auto;white-space:nowrap}.matrix>div{display:inline-block;min-width:150px;white-space:normal;vertical-align:top}.matrix .mh,.matrix .rowh{min-width:120px}}
+@media(max-width:560px){table{font-size:12.2px;display:block;overflow-x:auto}.hero{padding-top:44px}.checkhead{align-items:flex-start;flex-direction:column}.progress{width:100%}}
+@media print{nav,.quick,.topbtn,.reset{display:none!important}.shell{display:block}.hero,.inner{padding-left:22px;padding-right:22px}body{background:#fff;color:#111}p,li,td,.card p,.ck label{color:#222}.card,.note,.checkwrap,.steps li,details,.flow,.flowinfo{background:#fff;border-color:#ccc}.hero{background:#fff}.hero h1,h2,h3,b,strong{color:#000}.en,.kicker,.gold{color:#7d5c00}.checkwrap{break-inside:avoid}section{break-inside:auto}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav id="nav">
+  <button class="topbtn" id="navbtn" aria-label="목차 열기">☰</button>
+  <div class="brand">
+    <div class="logo">MIDAS</div>
+    <div class="model">M32 · FOH Live Mixing</div>
+    <div class="sub">교회 예배·찬양팀 실전 운영 가이드</div>
+  </div>
+  <div class="grp">0 · FOH 사고방식</div>
+  <a href="#role"><span class="num">0.1</span>FOH의 역할과 우선순위</a>
+  <a href="#loop"><span class="num">0.2</span>믹싱 판단 루프</a>
+  <div class="grp">1 · 예배 전 준비</div>
+  <a href="#prepare"><span class="num">1.1</span>시스템·콘솔 준비</a>
+  <a href="#line"><span class="num">1.2</span>Line Check</a>
+  <a href="#gain"><span class="num">1.3</span>Gain Staging</a>
+  <a href="#p16"><span class="num">1.4</span>P16·무대 모니터 확인</a>
+  <div class="grp">2 · 사운드체크</div>
+  <a href="#source"><span class="num">2.1</span>소스별 기본 톤</a>
+  <a href="#static"><span class="num">2.2</span>Static Mix</a>
+  <a href="#eq"><span class="num">2.3</span>EQ·공간 만들기</a>
+  <a href="#dyn"><span class="num">2.4</span>Dynamics</a>
+  <a href="#pan"><span class="num">2.5</span>Pan·Stereo</a>
+  <a href="#fx"><span class="num">2.6</span>FX·Reverb</a>
+  <a href="#feedback"><span class="num">2.7</span>Feedback·Headroom</a>
+  <div class="grp">3 · 전체 리허설</div>
+  <a href="#rehearsal"><span class="num">3.1</span>Full Band Rehearsal</a>
+  <a href="#speech"><span class="num">3.2</span>설교·진행 음성</a>
+  <a href="#transition"><span class="num">3.3</span>순서 전환</a>
+  <div class="grp">4 · 라이브 운용</div>
+  <a href="#live"><span class="num">4.1</span>예배 중 믹싱</a>
+  <a href="#emergency"><span class="num">4.2</span>문제 발생 대응</a>
+  <a href="#fatigue"><span class="num">4.3</span>청취·피로 관리</a>
+  <div class="grp">5 · 예배 후</div>
+  <a href="#post"><span class="num">5.1</span>저장·리뷰·정리</a>
+  <div class="grp">Quick Check</div>
+  <a href="#quick10"><span class="num">Q1</span>10분 전 체크리스트</a>
+  <a href="#quick60"><span class="num">Q2</span>60초 문제 해결</a>
+  <a href="#priority"><span class="num">Q3</span>소스 우선순위표</a>
+  <div class="links">
+    <a href="MIDAS_M32_Church_Manual_V1.html">Main Manual</a>
+    <a href="MIDAS_M32_Church_Appendix_V1.html">Appendix</a>
+  </div>
+  <div class="navfoot">V1 · Church FOH workflow<br>KR / EN terminology</div>
+</nav>
+
+<main>
+<header class="hero">
+  <div class="eyebrow">Church FOH · Live Mixing Workflow</div>
+  <h1>좋은 라이브 믹싱은<br>“많이 만지는 것”이 아니라<br>“무엇을 먼저 들을지”에서 시작합니다.</h1>
+  <p>이 문서는 M32를 사용하는 교회 FOH 엔지니어가 <b>예배 전 준비 → 라인체크 → 게인 → 사운드체크 → 전체 리허설 → 예배 중 믹싱 → 문제 대응 → 사후 리뷰</b>까지 한 흐름으로 운영할 수 있도록 만든 실전 가이드입니다. M32 기능 설명은 공식 User Manual에 맞추고, 믹싱 판단·수치 예시는 현장 실무의 시작점으로 구분했습니다.</p>
+  <div class="specs">
+    <div class="spec"><div class="v">LISTEN</div><div class="l">meter보다 귀 먼저</div></div>
+    <div class="spec"><div class="v">PRIORITY</div><div class="l">말씀·리드·리듬 순서</div></div>
+    <div class="spec"><div class="v">HEADROOM</div><div class="l">항상 여유 확보</div></div>
+    <div class="spec"><div class="v">ONE CHANGE</div><div class="l">한 번에 하나씩</div></div>
+  </div>
+</header>
+<div class="inner">
+
+<section id="role">
+<h2><span class="kicker">0 · FOH 사고방식 — 0.1</span>FOH 엔지니어의 역할과 우선순위</h2>
+<p>FOH는 단순히 “좋은 음색”을 만드는 사람이 아닙니다. <b>회중이 예배의 핵심을 놓치지 않도록 정보의 우선순위를 정하고, 전체 시스템을 안정적으로 유지하는 사람</b>입니다. 교회에서는 특히 음악과 음성이 같은 PA를 공유하기 때문에, 믹스의 기준을 먼저 정해두는 것이 중요합니다.</p>
+<div class="cards three">
+  <div class="card"><div class="title">1 · 전달</div><div class="sub">INTELLIGIBILITY</div><p>설교·기도·인도 멘트와 가사의 핵심이 또렷하게 들려야 합니다. “크다”와 “잘 들린다”는 다릅니다.</p></div>
+  <div class="card"><div class="title">2 · 밸런스</div><div class="sub">BALANCE</div><p>리드 보컬, 화성, 리듬, 악기 레이어의 상대 관계가 자연스러워야 합니다. 모든 채널이 똑같이 잘 들릴 필요는 없습니다.</p></div>
+  <div class="card"><div class="title">3 · 안정성</div><div class="sub">STABILITY</div><p>Feedback, clipping, routing 사고, phantom pop, 갑작스러운 scene recall 등 예배 흐름을 깨는 문제를 예방합니다.</p></div>
+</div>
+<div class="note tip"><span class="lbl">FOH 원칙</span>소리가 어딘가 불편할 때 <b>EQ부터 찾지 마세요.</b> 먼저 “무엇이 너무 크거나 작은가?”, “마이크·악기 자체 소리는 정상인가?”, “공간에서 실제로 문제인가?”를 확인합니다. 많은 믹싱 문제는 EQ가 아니라 <b>레벨·배치·소스</b>의 문제입니다.</div>
+<div class="checkwrap" data-group="mindset"><div class="checkhead"><strong>FOH 기본 원칙 체크</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="m1"><label for="m1">나는 “모든 채널을 살리는 것”보다 <b>예배에서 중요한 소스가 앞에 오도록</b> 우선순위를 정한다.</label></div>
+<div class="ck"><input type="checkbox" id="m2"><label for="m2">문제가 생기면 한 번에 여러 파라미터를 바꾸지 않고 <b>한 가지씩 수정하고 다시 듣는다.</b></label></div>
+<div class="ck"><input type="checkbox" id="m3"><label for="m3">RTA·미터는 판단을 돕는 도구로 쓰고, 최종 판단은 <b>객석에서 들리는 실제 소리</b>로 한다.</label></div>
+<div class="ck"><input type="checkbox" id="m4"><label for="m4">좋은 소리를 만들기 전에 <b>안전한 headroom과 안정적인 routing</b>을 먼저 확보한다.</label></div>
+</div></div>
+</section>
+
+<section id="loop">
+<h2><span class="kicker">0 · FOH 사고방식 — 0.2</span>믹싱 판단 루프 · Listen → Identify → Prioritize → Adjust → Recheck</h2>
+<div class="decision">
+  <div class="d"><b>LISTEN</b><span>먼저 전체를 듣기</span></div>
+  <div class="d"><b>IDENTIFY</b><span>문제가 무엇인지 이름 붙이기</span></div>
+  <div class="d"><b>PRIORITIZE</b><span>지금 고칠 가치가 있는지 판단</span></div>
+  <div class="d"><b>ADJUST</b><span>가장 작은 조작부터</span></div>
+  <div class="d"><b>RECHECK</b><span>전체 믹스로 돌아오기</span></div>
+</div>
+<p>초보 엔지니어는 한 채널을 오래 Solo한 채 “좋은 소리”를 만들기 쉽습니다. 그러나 라이브에서는 <b>개별 채널의 완벽함보다 전체 안에서의 역할</b>이 더 중요합니다. Solo는 문제 진단용으로 쓰고, 최종 EQ·레벨 판단은 가능한 한 전체 믹스에서 합니다.</p>
+<div class="note warn"><span class="lbl">흔한 실수</span>“뭔가 답답하다 → 보컬 고음 Boost → 기타도 고음 Boost → 키보드도 Boost”를 반복하면 전체 믹스가 더 공격적이고 피곤해질 수 있습니다. 먼저 <b>불필요하게 앞에 나온 소스를 줄이는 것</b>이 더 안전합니다.</div>
+</section>
+
+<section id="prepare">
+<h2><span class="kicker">1 · 예배 전 준비 — 1.1</span>시스템·콘솔 준비 · System & Console Prep</h2>
+<p>좋은 믹싱은 리허설이 시작되기 전에 이미 절반이 결정됩니다. “오늘도 지난주와 같겠지”라고 가정하지 말고, <b>입력·출력·네트워크·마이크·배터리·Scene 상태</b>를 빠르게 확인합니다.</p>
+<ol class="steps">
+<li><b>PA 전원 순서</b>를 확인합니다. 일반적으로 소스/콘솔을 먼저 켜고, 파워앰프·액티브 스피커는 마지막에 켭니다. 종료는 반대 순서로 진행합니다.</li>
+<li>M32의 현재 <span class="en">Scene / Snippet</span>, Main LR, DCA, Mute Group 상태가 예상과 같은지 확인합니다.</li>
+<li>입력 레이어와 채널명·색상, 설교자/싱어/성가대/밴드 채널이 실제 연결과 맞는지 확인합니다.</li>
+<li>무선 마이크 수신기 RF/AF 상태, 배터리, 주파수 충돌 여부를 확인합니다.</li>
+<li>P16/Ultranet 연결과 각 연주자의 P16 전원을 확인합니다.</li>
+<li>객석에서 메인 스피커가 정상 출력되는지, 좌/우가 바뀌거나 한쪽이 빠지지 않았는지 간단한 기준 음원 또는 Talk/Signal로 확인합니다.</li>
+</ol>
+<div class="checkwrap" data-group="prepare"><div class="checkhead"><strong>예배 전 System Prep</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="p1"><label for="p1">M32 전원 및 Main LR / DCA / Mute 상태 확인</label></div>
+<div class="ck"><input type="checkbox" id="p2"><label for="p2">오늘 사용할 Scene 또는 기본 상태를 확인하고, 의도치 않은 Recall이 없는지 확인</label></div>
+<div class="ck"><input type="checkbox" id="p3"><label for="p3">설교자·싱어 무선 마이크 RF / AF / 배터리 확인</label></div>
+<div class="ck"><input type="checkbox" id="p4"><label for="p4">성가대 콘덴서 채널 48V 필요 여부와 Mute 상태 확인</label></div>
+<div class="ck"><input type="checkbox" id="p5"><label for="p5">Main Key / Aux Key / A.Gtr / E.Gtr / Bass / E-Drum 입력 연결 확인</label></div>
+<div class="ck"><input type="checkbox" id="p6"><label for="p6">P16 / Ultranet 신호와 연주자 장비 전원 확인</label></div>
+<div class="ck"><input type="checkbox" id="p7"><label for="p7">Main L/R 스피커가 모두 정상이고 이상 잡음이 없는지 확인</label></div>
+</div></div>
+</section>
+
+<section id="line">
+<h2><span class="kicker">1 · 예배 전 준비 — 1.2</span>Line Check · “소리가 들어오는가?”만 먼저 확인</h2>
+<p><span class="badge practice">PRACTICE</span>Line Check의 목적은 음색을 만드는 것이 아니라 <b>각 소스가 올바른 채널로 안정적으로 들어오는지 확인하는 것</b>입니다. 이 단계에서 EQ를 오래 만지면 입력 오류를 놓치기 쉽습니다.</p>
+<div class="flow"><div class="flowrow" id="flowrow">
+<div class="stage act" data-k="source"><div class="box"><div class="ic">🎤</div><div class="nm">Source</div></div><span class="arr">▶</span></div>
+<div class="stage" data-k="input"><div class="box"><div class="ic">🔌</div><div class="nm">Physical Input</div></div><span class="arr">▶</span></div>
+<div class="stage" data-k="preamp"><div class="box"><div class="ic">🎚️</div><div class="nm">Preamp / Gain</div></div><span class="arr">▶</span></div>
+<div class="stage" data-k="channel"><div class="box"><div class="ic">📊</div><div class="nm">Channel Meter</div></div><span class="arr">▶</span></div>
+<div class="stage" data-k="route"><div class="box"><div class="ic">🔀</div><div class="nm">Main / P16 Route</div></div><span class="arr">▶</span></div>
+<div class="stage" data-k="out"><div class="box"><div class="ic">🔊</div><div class="nm">FOH Output</div></div></div>
+</div><div class="flowinfo" id="flowinfo"><div class="t">🎤 Source</div><div>마이크, 악기, 수신기, DI, 키보드, E-Drum 등 실제 음원 자체가 정상인지 먼저 확인합니다.</div><div class="k">Line Check = 연결/채널/신호의 존재 확인</div></div></div>
+<div class="cards">
+<div class="card"><div class="title">한 채널씩</div><div class="sub">ONE AT A TIME</div><p>“Kick!”처럼 명확하게 호출하고, 해당 채널 Meter와 실제 소리를 동시에 확인합니다. 스테레오 소스는 Left/Right 모두 따로 확인합니다.</p></div>
+<div class="card"><div class="title">이름을 믿지 말고 신호를 확인</div><div class="sub">VERIFY ROUTING</div><p>채널명이 “Pastor”여도 실제로 다른 입력이 들어올 수 있습니다. M32의 Meter와 Mute/SEL을 이용해 물리 연결을 확인합니다.</p></div>
+</div>
+<div class="checkwrap" data-group="line"><div class="checkhead"><strong>Line Check</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="l1"><label for="l1">성가대 마이크 각각 신호 확인 / 불필요한 hum·crackle 없음</label></div>
+<div class="ck"><input type="checkbox" id="l2"><label for="l2">설교자 마이크 신호·Mute·48V 필요 여부 확인</label></div>
+<div class="ck"><input type="checkbox" id="l3"><label for="l3">싱어 무선 마이크 각각 RF와 Audio 신호 확인</label></div>
+<div class="ck"><input type="checkbox" id="l4"><label for="l4">Main Key L/R, Aux Key L/R 스테레오 양쪽 입력 확인</label></div>
+<div class="ck"><input type="checkbox" id="l5"><label for="l5">A.Guitar / E.Guitar / E.Bass 신호 확인</label></div>
+<div class="ck"><input type="checkbox" id="l6"><label for="l6">E-Drum L/R 입력과 모듈 출력 레벨 확인</label></div>
+<div class="ck"><input type="checkbox" id="l7"><label for="l7">잘못된 채널명·케이블·좌우 반전이 없는지 확인</label></div>
+</div></div>
+</section>
+
+<section id="gain">
+<h2><span class="kicker">1 · 예배 전 준비 — 1.3</span>Gain Staging · 가장 큰 소리에서 먼저 안전하게</h2>
+<p><span class="badge official">M32</span>선택 채널의 <span class="en">GAIN</span>은 Config/Preamp 영역에서 조절하며, 콘덴서 마이크 등 필요한 입력에는 <span class="en">48 V</span> phantom power를 적용할 수 있습니다. <span class="badge practice">PRACTICE</span>실전에서는 연주자가 예배에서 낼 <b>가장 큰 수준의 실제 소리</b>를 내도록 한 뒤 충분한 headroom을 남깁니다.</p>
+<ol class="steps">
+<li>채널 Fader를 기준 위치에 두기 전에 <b>Preamp Gain</b>을 먼저 맞춥니다.</li>
+<li>보컬은 작은 테스트 말소리가 아니라 <b>가장 큰 후렴</b>, 설교자는 실제 강한 발성, 악기는 실제 연주 강도로 확인합니다.</li>
+<li>정상 피크가 0 dBFS에 가까워지지 않도록 여유를 둡니다. 순간 클립이 한 번이라도 발생하면 Gain을 낮추고 다시 확인합니다.</li>
+<li>Preamp Gain을 변경하면 FOH뿐 아니라 같은 preamp를 공유하는 P16 신호 레벨도 영향을 받을 수 있으므로 <b>리허설 후 큰 Gain 변경은 피합니다.</b></li>
+</ol>
+<div class="note warn"><span class="lbl">Gain ≠ Volume</span>Gain은 입력 신호의 기본 크기, Fader는 믹스 안에서의 비중입니다. 작게 들린다고 무조건 Gain을 올리면 feedback과 headroom 문제가 생길 수 있습니다.</div>
+<div class="checkwrap" data-group="gain"><div class="checkhead"><strong>Gain Staging</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="g1"><label for="g1">모든 입력을 실제 예배 강도로 받아 Gain을 설정</label></div>
+<div class="ck"><input type="checkbox" id="g2"><label for="g2">0 dBFS 근처의 clip/overload 없이 충분한 headroom 확보</label></div>
+<div class="ck"><input type="checkbox" id="g3"><label for="g3">무선 수신기/악기 출력이 너무 작거나 크지 않은지 소스 장비에서도 확인</label></div>
+<div class="ck"><input type="checkbox" id="g4"><label for="g4">48V On/Off는 해당 채널을 Mute한 상태에서 신중하게 진행</label></div>
+<div class="ck"><input type="checkbox" id="g5"><label for="g5">리허설 종료 후 Preamp Gain의 큰 변경은 최소화</label></div>
+</div></div>
+</section>
+
+<section id="p16">
+<h2><span class="kicker">1 · 예배 전 준비 — 1.4</span>P16 · Personal Monitoring을 FOH와 분리해서 생각하기</h2>
+<p><span class="badge official">M32</span><span class="en">ROUTING → p16 out</span>에서는 16개의 Ultranet 채널에 Main, Mix Bus, Direct Out 등의 소스를 지정하고 tap point를 선택할 수 있습니다. <span class="badge practice">PRACTICE</span>P16 개인 믹스는 FOH Fader 움직임에 과도하게 따라오지 않도록 <b>PreFader 또는 PostEQ 계열</b>을 흔히 검토합니다.</p>
+<table><tr><th>Tap Point 관점</th><th>FOH Fader 영향</th><th>장단점</th></tr>
+<tr><td><b>PreFdr</b></td><td>대체로 독립</td><td>FOH의 페이더 밸런스 변화와 분리하기 좋음. 채널 EQ 영향 여부는 선택된 tap에 따라 다름.</td></tr>
+<tr><td><b>PostEQ</b></td><td>FOH Fader와 분리</td><td>FOH에서 만든 기본 EQ를 P16에도 공유할 수 있어 편리하지만, FOH EQ 변경이 연주자에게도 들림.</td></tr>
+<tr><td><b>Post Fader</b></td><td>직접 영향</td><td>FOH가 채널을 내리면 P16도 변할 수 있어 개인 모니터에는 불편할 수 있음.</td></tr></table>
+<div class="note danger"><span class="lbl">주의</span>PreFader라고 해서 Preamp Gain과 완전히 독립되는 것은 아닙니다. <b>Gain 변경은 P16 레벨에도 영향을 줄 수 있으므로</b> 모니터가 맞춰진 이후에는 큰 Gain 변경을 피하는 것이 안전합니다.</div>
+<div class="checkwrap" data-group="p16"><div class="checkhead"><strong>P16 / Ultranet</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="u1"><label for="u1">P16 1–16 채널 mapping이 연주자 안내표와 일치</label></div>
+<div class="ck"><input type="checkbox" id="u2"><label for="u2">Key / Guitar / Bass / E-Drum / Vocal stem이 필요한 위치에 정상 출력</label></div>
+<div class="ck"><input type="checkbox" id="u3"><label for="u3">P16 tap point가 FOH 운영 철학과 일치 (PreFdr/PostEQ 등)</label></div>
+<div class="ck"><input type="checkbox" id="u4"><label for="u4">연주자에게 “FOH Gain 변경은 P16에도 들릴 수 있음”을 공유</label></div>
+<div class="ck"><input type="checkbox" id="u5"><label for="u5">P16 마스터 볼륨과 이어폰 볼륨이 과도하지 않은지 확인</label></div>
+</div></div>
+</section>
+
+<section id="source">
+<h2><span class="kicker">2 · 사운드체크 — 2.1</span>소스별 기본 톤 · Source First, Processing Second</h2>
+<p>EQ 전에 소스를 먼저 듣습니다. <b>마이크 위치, 싱어의 마이크 거리, DI/프리앰프 출력, 키보드 패치, 기타 모델러 톤, E-Drum 모듈 밸런스</b>가 좋지 않으면 콘솔에서 고칠수록 부자연스러워집니다.</p>
+<table><tr><th>소스</th><th>먼저 들을 것</th><th>FOH에서 주의</th></tr>
+<tr><td><b>설교자</b></td><td>말의 자음·명료도, proximity, 파열음</td><td>가장 높은 우선순위. 리버브 최소, 압축 과다 금지.</td></tr>
+<tr><td><b>성가대 Condenser</b></td><td>전체 합창의 자연스러움, 공간음, 스피커 bleed</td><td>필요 이상으로 올리지 않기. feedback margin 우선.</td></tr>
+<tr><td><b>싱어 Wireless</b></td><td>마이크 거리, 리드/코러스 역할, 수신기 출력</td><td>리드가 가사 전달을 주도하도록. 코러스는 리드보다 뒤.</td></tr>
+<tr><td><b>Main / Aux Key</b></td><td>패치별 저역·고역 차이, 스테레오 width</td><td>패드/피아노/신스가 모두 같은 레벨로 들리지 않게 역할 분리.</td></tr>
+<tr><td><b>A.Guitar</b></td><td>pickup harshness, body boom</td><td>저중역 뭉침과 2–5 kHz 공격성 주의.</td></tr>
+<tr><td><b>E.Guitar</b></td><td>모델러/앰프 톤 자체, hiss</td><td>밴드에서 너무 넓은 주파수 영역을 차지하지 않도록.</td></tr>
+<tr><td><b>E.Bass</b></td><td>fundamental과 note definition</td><td>저역을 크게 만드는 것보다 Kick/E-Drum과 역할을 나눔.</td></tr>
+<tr><td><b>E-Drum</b></td><td>모듈 내부 밸런스, kick/snare/cymbal 비율</td><td>스테레오 L/R 전체를 받는 경우 콘솔에서 개별 드럼을 완전히 고칠 수 없음.</td></tr></table>
+<div class="note tip"><span class="lbl">빠른 판단</span>채널을 Solo했을 때는 괜찮은데 전체 밴드에서 안 들린다면, 그 채널 EQ를 먼저 Boost하기보다 <b>경쟁하는 채널을 줄이거나 공간을 비우는 것</b>이 더 자연스럽습니다.</div>
+</section>
+
+<section id="static">
+<h2><span class="kicker">2 · 사운드체크 — 2.2</span>Static Mix · EQ보다 먼저 Fader로 음악을 만들기</h2>
+<p><b>Static Mix</b>는 복잡한 처리 없이 Fader와 Pan만으로 전체 밸런스를 잡는 단계입니다. 좋은 Static Mix가 만들어지면 EQ·Comp는 “문제를 고치는 도구”가 되고, Static Mix가 나쁘면 EQ·Comp가 “레벨 문제를 숨기는 도구”가 됩니다.</p>
+<ol class="steps">
+<li>모든 채널을 처음부터 크게 올리지 말고, <b>리듬 기반</b>부터 적당히 만듭니다: E-Drum → Bass.</li>
+<li>Main Key / Aux Key, Guitar를 더해 음악의 하모니와 공간을 만듭니다.</li>
+<li>코러스 보컬을 얹고, 마지막에 리드 보컬을 <b>가사가 자연스럽게 앞으로 오는 수준</b>으로 만듭니다.</li>
+<li>성가대는 “개별 목소리”보다 전체 합창의 크기와 공간을 듣고 필요한 만큼만 올립니다.</li>
+<li>전체를 들으며 DCA를 이용해 Singers / Band / Choir / Speech의 큰 덩어리 밸런스를 정리합니다.</li>
+</ol>
+<div class="note warn"><span class="lbl">모든 것을 들리게 하지 않기</span>좋은 믹스에는 앞·중간·뒤가 있습니다. 모든 악기를 선명하고 크게 만들면 결과적으로 아무것도 선명하지 않습니다.</div>
+<div class="checkwrap" data-group="static"><div class="checkhead"><strong>Static Mix</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="s1"><label for="s1">E-Drum과 Bass가 서로 싸우지 않고 하나의 리듬 섹션으로 들림</label></div>
+<div class="ck"><input type="checkbox" id="s2"><label for="s2">Keys와 Guitars가 보컬을 가리지 않음</label></div>
+<div class="ck"><input type="checkbox" id="s3"><label for="s3">리드 보컬 가사가 전체 밴드 위에서 자연스럽게 이해됨</label></div>
+<div class="ck"><input type="checkbox" id="s4"><label for="s4">코러스 보컬은 리드보다 뒤에 있으면서 화음이 충분히 들림</label></div>
+<div class="ck"><input type="checkbox" id="s5"><label for="s5">성가대는 공간을 채우되 PA feedback margin을 과도하게 사용하지 않음</label></div>
+<div class="ck"><input type="checkbox" id="s6"><label for="s6">Main LR가 clip/limiter에 기대지 않고 충분한 headroom을 유지</label></div>
+</div></div>
+</section>
+
+<section id="eq">
+<h2><span class="kicker">2 · 사운드체크 — 2.3</span>EQ · “좋은 톤”보다 “각자 들어갈 자리” 만들기</h2>
+<p><span class="badge official">M32</span>선택 채널의 Equaliser는 상단 EQ 섹션과 <span class="en">VIEW</span>를 통해 상세 조절할 수 있습니다. <span class="badge practice">PRACTICE</span>교회 라이브에서는 <b>HPF/Low Cut → 문제 대역 Cut → 필요한 경우 최소 Boost</b> 순서가 안전한 시작점입니다.</p>
+<table><tr><th>소스</th><th>자주 점검할 영역</th><th>주의</th></tr>
+<tr><td>설교·보컬</td><td>불필요한 초저역 / 200–400 Hz 뭉침 / 2–5 kHz 명료도 / 5–8 kHz 치찰음</td><td>2–5 kHz를 과하게 Boost하면 크게는 들리지만 피곤해질 수 있음.</td></tr>
+<tr><td>성가대</td><td>저역 rumble / 200–500 Hz 공간 뭉침 / presence</td><td>단일 마이크를 화려하게 만들기보다 전체 합창의 자연스러움 유지.</td></tr>
+<tr><td>Keys</td><td>저역 패드 / midrange density / high shimmer</td><td>패치마다 스펙트럼이 크게 바뀌므로 한 EQ를 모든 곡에 강제하지 않기.</td></tr>
+<tr><td>A.Guitar</td><td>100–250 Hz body / 2–5 kHz pick</td><td>“존재감”을 위해 고중역을 올리면 보컬과 쉽게 충돌.</td></tr>
+<tr><td>E.Guitar</td><td>저역 정리 / 2–4 kHz harshness / high fizz</td><td>모델러 자체 cab/IR 설정이 먼저.</td></tr>
+<tr><td>Bass</td><td>60–100 Hz body / 700 Hz–1.5 kHz note definition</td><td>저음만 올리면 객석 위치에 따라 boom이 더 커질 수 있음.</td></tr>
+<tr><td>E-Drum</td><td>kick/bass 충돌 / cymbal brightness</td><td>스테레오 총출력은 모듈 내부 밸런스 수정이 더 효과적인 경우가 많음.</td></tr></table>
+<div class="cards">
+<div class="card"><div class="title">Cut by role</div><div class="sub">MAKE SPACE</div><p>보컬이 안 들리면 보컬 3 kHz를 무조건 올리기보다, Guitar/Keys의 같은 영역을 조금 줄여 자리를 만드는 방법을 먼저 고려합니다.</p></div>
+<div class="card"><div class="title">RTA = 보조 도구</div><div class="sub">NOT THE JUDGE</div><p>M32의 RTA/GEQ overlay는 문제 주파수를 찾는 데 유용하지만, 화면의 봉우리를 “평평하게 만드는 것”이 목표는 아닙니다.</p></div>
+</div>
+<div class="note danger"><span class="lbl">Feedback EQ 주의</span>피드백이 난다고 채널/GEQ를 무작정 깊게 파면 음질과 headroom이 더 나빠질 수 있습니다. <b>어느 마이크가 어느 스피커와 loop를 만드는지</b> 먼저 확인하고, 필요한 주파수만 좁고 최소한으로 조정합니다.</div>
+</section>
+
+<section id="dyn">
+<h2><span class="kicker">2 · 사운드체크 — 2.4</span>Dynamics · 큰 순간을 다듬고, 작은 순간은 살아 있게</h2>
+<p><span class="badge official">M32</span>M32의 Dynamics는 Threshold, Ratio, Attack 등 세부 파라미터를 조절할 수 있습니다. <span class="badge practice">PRACTICE</span>초보~중급 단계에서는 “압축이 들리는 설정”보다 <b>피크가 조금 더 안정적으로 들리는 설정</b>을 목표로 합니다.</p>
+<table><tr><th>소스</th><th>실전 시작점</th><th>들으며 결정할 것</th></tr>
+<tr><td><b>설교자</b></td><td>2:1–3:1, 큰 문장에만 반응</td><td>말이 앞에 오되 숨소리·room noise까지 같이 커지지 않는지</td></tr>
+<tr><td><b>리드 보컬</b></td><td>2:1–4:1, peak에서 수 dB GR</td><td>후렴이 안정되면서도 감정의 강약이 살아 있는지</td></tr>
+<tr><td><b>코러스/성가대</b></td><td>약하게 또는 필요 없으면 OFF</td><td>여러 목소리의 자연스러운 움직임이 눌리지 않는지</td></tr>
+<tr><td><b>Bass</b></td><td>중간 Ratio, 연주 편차 안정화</td><td>note가 일정하되 attack이 사라지지 않는지</td></tr>
+<tr><td><b>Keys/Guitars</b></td><td>필요할 때만</td><td>이미 소스 자체에서 압축된 패치/모델러인지 확인</td></tr></table>
+<details><summary>Attack이 너무 빠르면?</summary><div class="body"><p>보컬의 자음, Bass의 pick/finger attack, 드럼의 타격감이 사라져 뒤로 물러날 수 있습니다. “레벨은 안정됐는데 힘이 없다”면 Attack이 너무 빠른지 확인합니다.</p></div></details>
+<details><summary>Release가 너무 느리면?</summary><div class="body"><p>다음 구절까지 눌린 상태가 남아 전체가 답답해질 수 있습니다. Gain Reduction meter가 음악의 리듬에 맞춰 자연스럽게 회복되는지 봅니다.</p></div></details>
+<div class="note warn"><span class="lbl">Make-up Gain 함정</span>압축 후 더 커져서 “좋아진 것처럼” 느끼는 현상을 피하세요. 압축 전/후의 체감 loudness를 비슷하게 맞춘 뒤 정말 더 안정적인지 비교합니다.</div>
+</section>
+
+<section id="pan">
+<h2><span class="kicker">2 · 사운드체크 — 2.5</span>Pan · Stereo Image는 넓이보다 번역 가능성</h2>
+<p>교회 객석은 중앙뿐 아니라 좌·우 좌석도 존재합니다. 스테레오 효과를 과도하게 쓰면 특정 좌석에서는 중요한 요소가 약해질 수 있습니다. <b>핵심 정보는 중앙에, 장식적 요소는 넓게</b>가 안전한 출발점입니다.</p>
+<table><tr><th>소스</th><th>Pan 접근</th></tr>
+<tr><td>설교 / 리드 보컬 / Bass</td><td><b>Center</b> 중심. 좌·우 어디서도 핵심이 유지되게.</td></tr>
+<tr><td>코러스 보컬</td><td>여러 명이면 약하게 좌우로 분산 가능. 극단적 hard pan은 신중.</td></tr>
+<tr><td>Main Key / Aux Key</td><td>스테레오 소스의 L/R을 유지하되 과도한 width 패치는 mono compatibility 확인.</td></tr>
+<tr><td>E-Drum Stereo</td><td>모듈의 audience perspective를 유지. 과도한 좌우 분리는 객석 번역성 저하 가능.</td></tr>
+<tr><td>A.Gtr / E.Gtr</td><td>역할이 겹칠 때 약간 좌우 분산하여 공간 확보 가능.</td></tr></table>
+<div class="note tip"><span class="lbl">Mono Check</span>M32 Monitor 섹션의 <span class="en">MONO</span> 기능 등을 활용해 중요한 소스가 mono에서 갑자기 사라지거나 얇아지지 않는지 간단히 확인하면 도움이 됩니다.</div>
+</section>
+
+<section id="fx">
+<h2><span class="kicker">2 · 사운드체크 — 2.6</span>FX · Reverb는 “예쁘게”보다 “거리”를 조절한다</h2>
+<p><span class="badge official">M32</span>M32는 내부 FX processor를 통해 Reverb, Delay 등을 사용할 수 있습니다. <span class="badge practice">PRACTICE</span>라이브에서 Reverb는 소스를 더 크게 만드는 것이 아니라 <b>공간 속 위치를 뒤로 보내는 도구</b>에 가깝습니다.</p>
+<div class="cards">
+<div class="card"><div class="title">Lead Vocal</div><div class="sub">SHORT / CONTROLLED</div><p>가사는 또렷하게, tail은 짧고 자연스럽게. 빠른 곡은 짧게, 느린 곡은 조금 길게. Pre-delay로 원음의 자음을 먼저 남길 수 있습니다.</p></div>
+<div class="card"><div class="title">Choir</div><div class="sub">SPACE ALREADY EXISTS</div><p>성가대 condenser가 이미 공간음을 많이 받는다면 Reverb를 추가하기보다 기존 room ambience를 먼저 듣습니다.</p></div>
+<div class="card"><div class="title">Speech</div><div class="sub">DRY FIRST</div><p>설교·기도·광고는 기본적으로 dry하고 명료하게. 특별한 연출이 아니라면 Reverb는 최소화합니다.</p></div>
+<div class="card"><div class="title">Delay</div><div class="sub">TEMPO AWARE</div><p>찬양곡에서 사용할 때 tempo와 phrase를 고려합니다. feedback이 많으면 가사와 연주를 가릴 수 있습니다.</p></div>
+</div>
+<div class="checkwrap" data-group="fx"><div class="checkhead"><strong>FX Check</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="f1"><label for="f1">FX를 끄고도 기본 믹스가 충분히 성립</label></div>
+<div class="ck"><input type="checkbox" id="f2"><label for="f2">Reverb Return을 올렸을 때 가사 명료도가 무너지지 않음</label></div>
+<div class="ck"><input type="checkbox" id="f3"><label for="f3">Low Cut / Hi Cut 등으로 Reverb 자체가 저역·고역을 과도하게 채우지 않음</label></div>
+<div class="ck"><input type="checkbox" id="f4"><label for="f4">설교/진행 음성에 불필요한 FX Send가 남아 있지 않음</label></div>
+</div></div>
+</section>
+
+<section id="feedback">
+<h2><span class="kicker">2 · 사운드체크 — 2.7</span>Feedback · Headroom · “얼마나 크게”보다 “얼마나 안전하게”</h2>
+<p>피드백은 단순히 특정 주파수의 문제가 아니라 <b>마이크 → 콘솔 → 스피커 → 공간 → 다시 마이크</b>로 이어지는 loop gain이 1 이상이 되는 현상입니다. 특히 성가대 condenser와 설교자 마이크처럼 스피커와 거리가 가까운 입력은 여유가 중요합니다.</p>
+<div class="cards three">
+<div class="card"><div class="title">1 · Geometry</div><div class="sub">MIC & SPEAKER</div><p>마이크 방향, 스피커 커버리지, 마이크와 스피커의 상대 위치를 먼저 확인합니다.</p></div>
+<div class="card"><div class="title">2 · Gain</div><div class="sub">SYSTEM LOOP</div><p>필요 이상의 channel gain/fader, monitor spill, stage volume을 줄입니다.</p></div>
+<div class="card"><div class="title">3 · EQ</div><div class="sub">SURGICAL LAST</div><p>실제로 반복되는 feedback frequency가 확인될 때 좁고 최소한으로 감쇄합니다.</p></div>
+</div>
+<div class="note danger"><span class="lbl">예배 중 피드백</span>먼저 <b>문제 채널/DCA를 3–6 dB 즉시 낮춰 안정</b>시킨 뒤 원인을 찾습니다. feedback이 나는 상태에서 EQ 화면을 찾느라 시간을 보내지 마세요. 안정화가 먼저입니다.</div>
+<div class="checkwrap" data-group="feedback"><div class="checkhead"><strong>Feedback & Headroom</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="fb1"><label for="fb1">성가대 마이크가 필요 이상으로 올라가 있지 않음</label></div>
+<div class="ck"><input type="checkbox" id="fb2"><label for="fb2">설교자/싱어가 스피커 앞으로 이동하는 동선 고려</label></div>
+<div class="ck"><input type="checkbox" id="fb3"><label for="fb3">Main LR와 주요 DCA에 갑작스러운 후렴 peak를 받을 headroom이 남아 있음</label></div>
+<div class="ck"><input type="checkbox" id="fb4"><label for="fb4">RTA/GEQ는 반복되는 문제를 확인할 때만 보조적으로 사용</label></div>
+</div></div>
+</section>
+
+<section id="rehearsal">
+<h2><span class="kicker">3 · 전체 리허설 — 3.1</span>Full Band Rehearsal · 채널이 아니라 “곡”을 믹싱하기</h2>
+<p>개별 사운드체크가 끝났으면 이제 모든 판단 기준을 <b>전체 곡</b>으로 바꿉니다. 리허설 중에는 계속 채널 EQ를 만지기보다 곡의 구조를 파악하고 <b>Verse / Pre-Chorus / Chorus / Bridge</b>에서 어떤 요소가 앞에 와야 하는지 익힙니다.</p>
+<ol class="steps">
+<li><b>첫 곡</b>에서 전체 loudness와 Main headroom을 설정합니다.</li>
+<li>리드 보컬과 가사가 계속 들리는지 확인합니다. 후렴에서 밴드가 커질 때 가장 중요합니다.</li>
+<li>Keys/Guitars가 서로 같은 역할을 하는 구간에서는 한쪽을 조금 뒤로 두어 density를 관리합니다.</li>
+<li>Bridge·Build-up에서 DCA를 이용해 그룹 단위로 음악의 에너지를 조절합니다.</li>
+<li>곡 사이 MC/기도/성경봉독 전환을 실제 순서대로 연습합니다.</li>
+<li>객석 중앙뿐 아니라 가능한 경우 좌/우·앞/뒤 위치를 잠깐 확인합니다.</li>
+</ol>
+<div class="note tip"><span class="lbl">리허설 메모</span>“1번 곡 Chorus에서 Aux Key가 너무 큼”, “2번 곡 Bridge Lead +1.5 dB”처럼 <b>곡·구간·행동</b> 단위로 메모하면 예배 중 판단이 빨라집니다.</div>
+<div class="checkwrap" data-group="rehearsal"><div class="checkhead"><strong>Full Rehearsal</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="r1"><label for="r1">가장 큰 Chorus에서도 Lead Vocal이 가려지지 않음</label></div>
+<div class="ck"><input type="checkbox" id="r2"><label for="r2">Verse에서 반주가 과하게 꽉 차 있지 않고 dynamics가 남아 있음</label></div>
+<div class="ck"><input type="checkbox" id="r3"><label for="r3">Bass와 E-Drum의 low end가 객석에서 뭉치지 않음</label></div>
+<div class="ck"><input type="checkbox" id="r4"><label for="r4">곡 사이 Mute/DCA/FX 전환 동작을 실제로 확인</label></div>
+<div class="ck"><input type="checkbox" id="r5"><label for="r5">객석 좌/우/앞/뒤 중 최소 2–3 지점에서 번역성을 확인</label></div>
+</div></div>
+</section>
+
+<section id="speech">
+<h2><span class="kicker">3 · 전체 리허설 — 3.2</span>설교·기도·진행 음성 · Music Mix와 다른 기준</h2>
+<p>음악이 멈추고 설교가 시작되면 FOH의 기준도 바뀝니다. <b>명료도, 안정성, 자연스러운 음색, 낮은 noise</b>가 우선입니다. “음악처럼 풍성한 소리”를 만들기보다 회중이 장시간 편하게 들을 수 있어야 합니다.</p>
+<table><tr><th>항목</th><th>음악</th><th>설교·진행</th></tr>
+<tr><td>FX</td><td>공간감·창의적 사용 가능</td><td>대체로 최소 / Dry 중심</td></tr>
+<tr><td>Compression</td><td>음악적 dynamics와 안정성 균형</td><td>큰 문장만 부드럽게 제어</td></tr>
+<tr><td>EQ</td><td>악기 사이 공간 만들기</td><td>자음 명료도와 장시간 청취 피로 균형</td></tr>
+<tr><td>Level</td><td>곡 dynamics에 따라 변화</td><td>문장마다 들쭉날쭉하지 않게 안정적으로</td></tr>
+<tr><td>Headroom</td><td>후렴 peak 대비</td><td>갑작스러운 강한 발성 대비</td></tr></table>
+<div class="note warn"><span class="lbl">설교 중 Gain 조작</span>설교자가 갑자기 작게 들린다고 Preamp Gain을 크게 올리지 말고 <b>마이크 위치 → 채널 Meter → DCA/Fader → 실제 객석 level</b> 순으로 확인합니다. 필요하면 작은 Fader 보정부터 합니다.</div>
+</section>
+
+<section id="transition">
+<h2><span class="kicker">3 · 전체 리허설 — 3.3</span>순서 전환 · Transition은 믹싱의 일부</h2>
+<p>예배에서 가장 사고가 많이 나는 순간은 곡 중간보다 <b>순서가 바뀌는 순간</b>입니다. 무대가 조용해지면 작은 noise, 열린 마이크, FX tail, 잘못된 Mute가 더 크게 느껴집니다.</p>
+<table><tr><th>전환</th><th>FOH 동작 예시</th></tr>
+<tr><td>찬양 → 기도</td><td>Band DCA를 부드럽게 낮추고 Lead/Prayer mic를 확보. Reverb tail이 지나치게 남지 않게.</td></tr>
+<tr><td>찬양 → 설교</td><td>Band/Choir 필요 채널 Mute, Speech DCA 준비, 불필요한 FX Send/Return 확인.</td></tr>
+<tr><td>설교 → 찬양</td><td>Band DCA / Singer DCA / FX Return을 미리 준비하고 시작 순간에 급하게 올리지 않도록.</td></tr>
+<tr><td>성가대 → 진행</td><td>Choir mic가 공간 noise를 계속 크게 받고 있지 않은지 확인.</td></tr></table>
+<div class="note tip"><span class="lbl">Mute Group 활용</span>M32의 Mute Group을 “Band”, “Choir”, “Spare Mics”처럼 구성하면 전환이 빨라집니다. 단, <b>어떤 채널이 그룹에 들어있는지 확실히 알고 사용할 것</b>이 중요합니다.</div>
+</section>
+
+<section id="live">
+<h2><span class="kicker">4 · 라이브 운용 — 4.1</span>예배 중 믹싱 · 손보다 귀가 먼저 움직이게</h2>
+<p>리허설이 잘 됐다면 예배 중에는 EQ/Compressor를 계속 다시 만드는 대신 <b>Fader/DCA 중심의 작은 보정</b>이 대부분입니다. 라이브 믹싱은 “상태를 유지하며 필요한 순간만 개입”하는 작업입니다.</p>
+<div class="cards three">
+<div class="card"><div class="title">계속 볼 것</div><div class="sub">WATCH</div><ul><li>Lead vocal 위치</li><li>Speech clarity</li><li>Main headroom</li><li>Feedback 징후</li><li>무선 RF/배터리</li></ul></div>
+<div class="card"><div class="title">계속 들을 것</div><div class="sub">LISTEN</div><ul><li>가사 전달</li><li>저역 과다</li><li>중역 밀도</li><li>고역 피로감</li><li>FX가 너무 앞으로 오는지</li></ul></div>
+<div class="card"><div class="title">자주 안 만질 것</div><div class="sub">AVOID</div><ul><li>Preamp Gain 큰 변경</li><li>깊은 EQ sweep</li><li>Scene 전체 Recall</li><li>Routing 변경</li><li>P16 mapping 변경</li></ul></div>
+</div>
+<h3>곡 안에서의 Fader Riding</h3>
+<ul><li><b>Verse:</b> 악기 density를 조금 줄이고 리드 보컬의 가사를 앞에 둡니다.</li><li><b>Chorus:</b> 밴드 에너지가 커져도 Lead가 뒤로 사라지지 않도록 Singer/Band DCA 관계를 봅니다.</li><li><b>Bridge/Build:</b> 단순히 Main을 올리기보다 악기 그룹과 FX를 단계적으로 조절하여 에너지를 만듭니다.</li><li><b>Quiet moment:</b> noise floor와 열린 마이크가 갑자기 드러나므로 불필요한 채널을 정리합니다.</li></ul>
+<div class="checkwrap" data-group="live"><div class="checkhead"><strong>예배 중 Live Mix</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="v1"><label for="v1">Lead vocal / Speech를 가장 먼저 확인</label></div>
+<div class="ck"><input type="checkbox" id="v2"><label for="v2">Fader/DCA 작은 움직임으로 먼저 해결</label></div>
+<div class="ck"><input type="checkbox" id="v3"><label for="v3">SOLO에 오래 머물지 않고 전체 믹스로 즉시 돌아옴</label></div>
+<div class="ck"><input type="checkbox" id="v4"><label for="v4">갑작스러운 큰 조작 전 현재 Layer / SEL / SENDS ON FADER 상태 확인</label></div>
+<div class="ck"><input type="checkbox" id="v5"><label for="v5">피드백·클립이 보이면 음질보다 안정화를 먼저 수행</label></div>
+</div></div>
+</section>
+
+<section id="emergency">
+<h2><span class="kicker">4 · 라이브 운용 — 4.2</span>문제 발생 대응 · 60초보다 6초가 중요하다</h2>
+<p>예배 중 문제 대응의 목적은 “원인을 완벽히 찾기”가 아니라 <b>먼저 사고를 멈추고, 다음에 원인을 좁히는 것</b>입니다.</p>
+<table><tr><th>증상</th><th>즉시 행동</th><th>그 다음 확인</th></tr>
+<tr><td><b>Feedback</b></td><td>문제 채널/DCA를 즉시 몇 dB 낮춤</td><td>어느 mic → 어느 speaker loop인지 확인, 이후 필요한 EQ/배치 수정</td></tr>
+<tr><td><b>채널 무음</b></td><td>대체 마이크/채널이 있으면 즉시 전환</td><td>Source → cable → input meter → mute → route → fader 순으로 확인</td></tr>
+<tr><td><b>전체 무음</b></td><td>Main mute/DCA/scene/output 상태 확인</td><td>Routing, amplifier/speaker power, physical output 확인</td></tr>
+<tr><td><b>한쪽 PA 무음</b></td><td>가능하면 전체 level을 안전하게 유지</td><td>Main L/R meter → XLR output → amp/speaker chain 확인</td></tr>
+<tr><td><b>무선 끊김</b></td><td>Spare mic 전달</td><td>RF, battery, antenna, frequency 문제 확인</td></tr>
+<tr><td><b>갑작스러운 clip</b></td><td>문제 채널/DCA 또는 Main을 낮춤</td><td>Preamp overload인지 channel/bus overload인지 분리</td></tr></table>
+<div class="note danger"><span class="lbl">M32 조작 사고 예방</span><span class="en">SENDS ON FADER</span>가 켜져 있거나 다른 Layer가 선택된 상태에서 페이더를 움직이면 의도와 다른 Mix Bus를 바꿀 수 있습니다. 예배 중 큰 조작 전에는 <b>Layer → SEL → Sends on Fader → 대상 이름</b>을 한 번 확인합니다.</div>
+</section>
+
+<section id="fatigue">
+<h2><span class="kicker">4 · 라이브 운용 — 4.3</span>청취 위치·SPL·피로 관리 · 내 귀가 틀릴 수도 있다</h2>
+<p>같은 믹스도 음량, 청취 위치, 시간에 따라 다르게 느껴집니다. FOH 엔지니어가 한 자리에서 오래 큰 소리를 들으면 고역에 둔감해져 <b>점점 더 밝고 큰 믹스</b>를 만들기 쉽습니다.</p>
+<ul>
+<li>가능하면 리허설 중 객석 <b>Front / Middle / Rear</b>를 짧게라도 확인합니다.</li>
+<li>한 번씩 <b>조금 낮은 monitor/listening level</b>로 내려서 리드 보컬과 핵심 악기의 밸런스가 여전히 유지되는지 듣습니다.</li>
+<li>RTA를 계속 보며 EQ하지 말고, 화면에서 눈을 떼고 10–20초 전체를 듣는 시간을 의도적으로 만듭니다.</li>
+<li>“고역이 부족하다”고 느끼기 시작했을 때 무조건 Boost하기 전에 <b>청취 피로</b> 가능성을 생각합니다.</li>
+<li>가능하다면 기준 음원/reference track을 예배 전 짧게 들어 PA의 오늘 상태와 귀의 기준점을 잡습니다.</li>
+</ul>
+<div class="note tip"><span class="lbl">좋은 FOH 습관</span>라이브 중 30초마다 무언가를 만지는 엔지니어보다, <b>잘 듣고 필요할 때만 정확하게 움직이는 엔지니어</b>가 더 안정적인 믹스를 만들 가능성이 높습니다.</div>
+</section>
+
+<section id="post">
+<h2><span class="kicker">5 · 예배 후 — 5.1</span>저장 · 리뷰 · 정리 · 다음 주를 더 쉽게 만들기</h2>
+<p>예배가 끝나면 “잘 끝났다”에서 멈추지 않고, 오늘의 수정 중 다음 주에도 유지할 것과 일회성 상황을 구분합니다.</p>
+<ol class="steps">
+<li>오늘 변경한 Gain/EQ/DCA/FX 중 <b>재사용할 가치가 있는 변경</b>을 확인합니다.</li>
+<li>필요하면 Scene 또는 Snippet을 별도 이름으로 저장합니다. 기존 기준 Scene을 덮어쓰기 전에 의도한 것인지 확인합니다.</li>
+<li>문제가 있었던 채널을 메모합니다: 무선 RF, 케이블, P16 mapping, 특정 feedback frequency 등.</li>
+<li>다음 주에 필요한 조치가 장비 문제인지, 연주/마이크 technique 문제인지, FOH 설정 문제인지 구분합니다.</li>
+<li>콘솔·스피커 전원을 안전한 순서로 종료하고 무선/배터리/마이크를 정리합니다.</li>
+</ol>
+<div class="checkwrap" data-group="post"><div class="checkhead"><strong>Post Service Review</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="o1"><label for="o1">오늘 수정 중 다음 주에도 유지할 설정을 구분</label></div>
+<div class="ck"><input type="checkbox" id="o2"><label for="o2">Scene/Backup 저장 여부 확인</label></div>
+<div class="ck"><input type="checkbox" id="o3"><label for="o3">무선·케이블·P16·피드백 문제를 간단히 기록</label></div>
+<div class="ck"><input type="checkbox" id="o4"><label for="o4">장비 문제 / 연주 문제 / 믹싱 문제를 구분하여 다음 액션 지정</label></div>
+<div class="ck"><input type="checkbox" id="o5"><label for="o5">PA 종료 순서와 장비 정리 완료</label></div>
+</div></div>
+</section>
+
+<section id="quick10">
+<h2><span class="kicker">Quick Check — Q1</span>예배 시작 10분 전 최종 체크리스트</h2>
+<div class="checkwrap" data-group="quick10"><div class="checkhead"><strong>10-Minute Go / No-Go</strong><div class="progress"><div class="pbar"><div class="pfill"></div></div><span class="ptxt">0%</span><button class="reset">Reset</button></div></div><div class="checklist">
+<div class="ck"><input type="checkbox" id="q101"><label for="q101"><b>설교자:</b> 마이크 ON / 배터리 / 정상 level / feedback 여유</label></div>
+<div class="ck"><input type="checkbox" id="q102"><label for="q102"><b>싱어:</b> 모든 무선 RF / AF / battery 정상</label></div>
+<div class="ck"><input type="checkbox" id="q103"><label for="q103"><b>성가대:</b> 48V / Mute / noise / feedback 상태 확인</label></div>
+<div class="ck"><input type="checkbox" id="q104"><label for="q104"><b>Band:</b> Main Key / Aux Key / A.Gtr / E.Gtr / Bass / E-Drum 신호 확인</label></div>
+<div class="ck"><input type="checkbox" id="q105"><label for="q105"><b>P16:</b> Ultranet 정상 / 연주자 개인 믹스 확인</label></div>
+<div class="ck"><input type="checkbox" id="q106"><label for="q106"><b>M32:</b> 올바른 Scene / Layer / Sends on Fader OFF / Main LR 정상</label></div>
+<div class="ck"><input type="checkbox" id="q107"><label for="q107"><b>FX:</b> 찬양용 FX 준비 / Speech에 불필요한 Send 없음</label></div>
+<div class="ck"><input type="checkbox" id="q108"><label for="q108"><b>PA:</b> Main L/R 정상 / 이상 noise 없음 / headroom 확보</label></div>
+<div class="ck"><input type="checkbox" id="q109"><label for="q109"><b>Spare:</b> 예비 무선 마이크 또는 유선 대체 경로 준비</label></div>
+<div class="ck"><input type="checkbox" id="q110"><label for="q110"><b>FOH:</b> 오늘 순서표와 전환 포인트를 알고 있음</label></div>
+</div></div>
+</section>
+
+<section id="quick60">
+<h2><span class="kicker">Quick Check — Q2</span>60초 문제 해결 · Signal Flow 순서</h2>
+<div class="note"><span class="lbl">기억할 한 줄</span><b>Source → Input → Gain → Mute → Routing → Fader/DCA → Bus/Main → Physical Output → Amp/Speaker</b></div>
+<table><tr><th>시간</th><th>확인</th><th>질문</th></tr>
+<tr><td>0–10초</td><td><b>Source</b></td><td>마이크/악기/수신기 자체가 켜져 있는가? 케이블이 꽂혀 있는가?</td></tr>
+<tr><td>10–20초</td><td><b>Input Meter</b></td><td>M32 채널 meter에 신호가 들어오는가?</td></tr>
+<tr><td>20–30초</td><td><b>Mute / DCA</b></td><td>채널 또는 DCA/Mute Group이 내려가 있지 않은가?</td></tr>
+<tr><td>30–40초</td><td><b>Routing</b></td><td>Main ST / Bus / P16 routing이 맞는가?</td></tr>
+<tr><td>40–50초</td><td><b>Output Meter</b></td><td>Main LR 또는 해당 Bus meter에 신호가 있는가?</td></tr>
+<tr><td>50–60초</td><td><b>Physical Output</b></td><td>XLR out / amp / speaker / cable 단계에서 끊긴 것은 아닌가?</td></tr></table>
+<div class="note tip"><span class="lbl">원인 분리</span>Input Meter가 없으면 <b>콘솔 앞단</b>, Input Meter는 있는데 Main Meter가 없으면 <b>콘솔 내부 routing/mute</b>, Main Meter는 있는데 소리가 없으면 <b>콘솔 뒤 출력 체인</b>을 먼저 의심합니다.</div>
+</section>
+
+<section id="priority">
+<h2><span class="kicker">Quick Check — Q3</span>교회 FOH 소스 우선순위 · 무엇을 먼저 살릴 것인가</h2>
+<div class="matrix">
+<div class="mh">소스</div><div class="mh">명료도</div><div class="mh">음악 중심</div><div class="mh">Feedback 위험</div><div class="mh">라이브 조작 빈도</div>
+<div class="rowh">설교 / 기도</div><div class="hi"><b>최우선</b></div><div>—</div><div class="mid">중~높음</div><div class="hi">높음</div>
+<div class="rowh">리드 보컬</div><div class="hi"><b>매우 높음</b></div><div class="hi">최우선</div><div class="mid">중</div><div class="hi">높음</div>
+<div class="rowh">코러스 싱어</div><div>높음</div><div class="mid">높음</div><div>중</div><div class="mid">중</div>
+<div class="rowh">성가대</div><div>높음</div><div class="mid">중~높음</div><div class="hi">높음</div><div>중</div>
+<div class="rowh">E-Drum / Bass</div><div>낮음</div><div class="hi">리듬 기반</div><div>낮음</div><div class="mid">중</div>
+<div class="rowh">Keys</div><div>낮음</div><div class="mid">화성/공간</div><div>낮음</div><div class="mid">중</div>
+<div class="rowh">Guitars</div><div>낮음</div><div class="mid">리듬/색채</div><div>낮음</div><div class="mid">중</div>
+</div>
+<div class="note warn"><span class="lbl">절대 규칙은 아님</span>곡과 편곡에 따라 특정 악기가 순간적으로 가장 중요할 수 있습니다. 이 표는 “문제가 동시에 여러 개 생겼을 때 무엇부터 볼 것인가”를 위한 기본 우선순위입니다.</div>
+</section>
+
+<div class="sourcebox"><span class="badge official">OFFICIAL BASIS</span> M32 기능 관련 내용은 제공된 <b>M32 User Manual</b>의 Channel Strip / Config-Preamp / Dynamics / Equaliser / Bus Sends / Main Bus / Monitor / Routing / P16 Out / Effects / Show Control 설명을 기준으로 구성했습니다. <span class="badge practice">PRACTICE</span> EQ 주파수 범위, Compression 시작점, FOH 우선순위, 사운드체크 순서 등은 제조사 고정값이 아니라 교회 라이브 환경에서 사용할 수 있는 실전 시작점입니다. 공간·PA·마이크·연주자에 따라 반드시 귀로 다시 판단하세요.</div>
+<div class="footer">MIDAS M32 · Church FOH Live Mixing Guide V1<br>Designed as a companion to the M32 Church Manual / Appendix. Checklists are saved locally in the browser when possible.</div>
+<div class="quick"><button id="clearAll">✓ 전체 체크 초기화</button></div>
+</div>
+</main>
+</div>
+<script>
+const nav=document.getElementById('nav');
+const navbtn=document.getElementById('navbtn');
+if(navbtn) navbtn.addEventListener('click',()=>nav.classList.toggle('navopen'));
+
+// Active nav section
+const links=[...document.querySelectorAll('nav a[href^="#"]')];
+const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(a=>a.classList.remove('on'));
+      const a=links.find(x=>x.getAttribute('href')==='#'+e.target.id); if(a)a.classList.add('on');
+    }
+  })
+},{rootMargin:'-18% 0px -72% 0px',threshold:0});
+sections.forEach(s=>io.observe(s));
+
+// Interactive line-check flow
+const flowData={
+ source:['🎤 Source','마이크, 악기, 수신기, DI, 키보드, E-Drum 등 실제 음원 자체가 정상인지 먼저 확인합니다.','Line Check = 소스 자체 확인'],
+ input:['🔌 Physical Input','케이블과 M32 물리 입력이 올바른지 확인합니다. 다른 채널에 연결되어 있지 않은지 Meter로 검증합니다.','Local XLR / Aux / 기타 실제 입력'],
+ preamp:['🎚️ Preamp / Gain','해당 입력에 필요한 Gain과 48V 상태를 확인합니다. 클립이 있으면 다음 단계로 가지 말고 먼저 해결합니다.','CONFIG / PREAMP'],
+ channel:['📊 Channel Meter','채널 Meter가 정상적으로 움직이는지 확인합니다. 여기까지 신호가 있다면 소스와 콘솔 입력은 대체로 살아 있습니다.','SEL / Channel Meter'],
+ route:['🔀 Main / P16 Route','Main ST, Bus, P16 routing과 Mute/DCA 상태를 확인합니다. Input Meter는 있는데 출력이 없을 때 중요한 단계입니다.','ST / Bus / ROUTING / P16'],
+ out:['🔊 FOH Output','Main L/R Meter 이후 XLR Output, amp, active speaker, physical cable을 확인합니다.','Main LR → XLR Out → PA']
+};
+const flowInfo=document.getElementById('flowinfo');
+document.querySelectorAll('.stage').forEach(s=>s.addEventListener('click',()=>{
+  document.querySelectorAll('.stage').forEach(x=>x.classList.remove('act'));s.classList.add('act');
+  const d=flowData[s.dataset.k]; if(d&&flowInfo) flowInfo.innerHTML=`<div class="t">${d[0]}</div><div>${d[1]}</div><div class="k">${d[2]}</div>`;
+}));
+
+// Persist checklists
+const boxes=[...document.querySelectorAll('.checkwrap input[type="checkbox"]')];
+const storageKey='m32_foh_guide_v1_checks';
+let saved={};
+try{saved=JSON.parse(localStorage.getItem(storageKey)||'{}')}catch(e){saved={}}
+boxes.forEach(b=>{if(saved[b.id])b.checked=true;b.addEventListener('change',saveChecks)});
+function saveChecks(){
+  const obj={};boxes.forEach(b=>obj[b.id]=b.checked);try{localStorage.setItem(storageKey,JSON.stringify(obj))}catch(e){}
+  updateAllProgress();
+}
+function updateProgress(wrap){
+  const bs=[...wrap.querySelectorAll('input[type="checkbox"]')]; const done=bs.filter(b=>b.checked).length; const pct=bs.length?Math.round(done/bs.length*100):0;
+  const fill=wrap.querySelector('.pfill'),txt=wrap.querySelector('.ptxt'); if(fill)fill.style.width=pct+'%'; if(txt)txt.textContent=pct+'%';
+}
+function updateAllProgress(){document.querySelectorAll('.checkwrap').forEach(updateProgress)}
+document.querySelectorAll('.checkwrap .reset').forEach(btn=>btn.addEventListener('click',e=>{
+  const wrap=e.target.closest('.checkwrap');wrap.querySelectorAll('input[type="checkbox"]').forEach(b=>b.checked=false);saveChecks();
+}));
+const clearAll=document.getElementById('clearAll');if(clearAll)clearAll.addEventListener('click',()=>{boxes.forEach(b=>b.checked=false);saveChecks();});
+updateAllProgress();
+</script>
+</body>
+</html>

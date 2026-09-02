@@ -3,15 +3,17 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MIACC · M32 Audio Lab</title>
+<script>(()=>{try{const saved=localStorage.getItem('m32-theme');document.documentElement.dataset.theme=saved==='dark'||saved==='light'?saved:(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark')}catch{document.documentElement.dataset.theme='dark'}})();</script>
 <style>
-:root{--bg:#0e0f10;--panel:#17191c;--panel2:#202329;--edge:#343942;--ink:#f2f3f4;--muted:#aeb4bb;--gold:#d6ae45;--gold2:#f0cb6b;--green:#59c27a;--red:#e15d62}
+:root{color-scheme:dark;--bg:#0e0f10;--panel:#17191c;--panel2:#202329;--edge:#343942;--ink:#f2f3f4;--muted:#aeb4bb;--gold:#d6ae45;--gold2:#f0cb6b;--green:#59c27a;--red:#e15d62}
+[data-theme="light"]{color-scheme:light;--bg:#f4f1e9;--panel:#fff;--panel2:#ebe6da;--edge:#cec6b7;--ink:#1b1d21;--muted:#5d626b;--gold:#806512;--gold2:#654f0b;--green:#227447;--red:#a83c3c}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;line-height:1.6}
 .wrap{max-width:1180px;margin:auto;padding:26px}.hero{padding:38px 0 26px;border-bottom:1px solid var(--edge)}
 .eyebrow{font:700 12px ui-monospace,monospace;letter-spacing:1.7px;color:var(--gold2)}h1{font-size:38px;line-height:1.15;margin:10px 0}h2{margin:8px 0 12px}.muted{color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:24px 0}.card,.lab{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:18px}
 .card h3{margin:6px 0}.tag{display:inline-block;border:1px solid #6d5b25;border-radius:999px;padding:3px 9px;color:var(--gold2);font:700 11px ui-monospace,monospace}
 .ok{color:var(--green)}.warn{color:var(--gold2)}a{color:var(--gold2)}
-button,.btn{background:#2a2415;color:var(--gold2);border:1px solid #6d5b25;border-radius:8px;padding:9px 12px;cursor:pointer;font:inherit}.btn input{display:none}
+button,.btn{background:color-mix(in srgb,var(--gold) 12%,var(--panel));color:var(--gold2);border:1px solid var(--gold);border-radius:8px;padding:9px 12px;cursor:pointer;font:inherit}.btn input{display:none}button:focus-visible,a:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
 button.active{background:#4a3b12;border-color:var(--gold2)}button:disabled{opacity:.45;cursor:not-allowed}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0}.fileName{font-size:13px;color:var(--muted)}
 .lab{margin-top:24px}.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.module{background:var(--panel2);border:1px solid var(--edge);border-radius:12px;padding:14px}
@@ -22,12 +24,14 @@ input[type=range]{width:100%}.meter{height:11px;background:#0b0c0d;border:1px so
 .note{background:#202329;border-left:3px solid var(--gold);padding:12px 14px;border-radius:8px;margin:14px 0}.danger{border-left-color:var(--red)}
 .eqgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.eqband{border:1px solid var(--edge);border-radius:10px;padding:10px;background:#15171a}.eqband h4{margin:0 0 8px;color:var(--gold2)}
 footer{margin-top:38px;padding:20px 0;color:var(--muted);border-top:1px solid var(--edge);font-size:13px}
+.themebar{display:flex;justify-content:space-between;align-items:center;gap:12px}.theme-toggle{min-width:44px;min-height:44px;border-radius:12px;font-weight:800}[data-theme="light"] .module,[data-theme="light"] .note,[data-theme="light"] .box,[data-theme="light"] .eqband,[data-theme="light"] .meterBox{background:var(--panel2)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 @media(max-width:900px){.cols,.grid{grid-template-columns:1fr}.eqgrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.row{grid-template-columns:1fr}.meters,.eqgrid{grid-template-columns:1fr}.wrap{padding:16px}h1{font-size:31px}}
 </style>
 </head>
 <body><main class="wrap">
 <section class="hero">
-<div class="eyebrow">MIACC · MIDAS M32</div><h1>M32 Output Hub</h1>
+<div class="themebar"><div class="eyebrow">MIACC · MIDAS M32</div><button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">☀ Light</button></div><h1>M32 Audio Lab</h1>
 <p><a href="./index.html">← M32 Output Hub로 돌아가기</a></p>
 <p class="muted">교회 예배·찬양팀용 M32 자료와 실제 음원 기반 Interactive Lab을 한 곳에서 연습합니다.</p>
 <div class="note"><b class="ok">브라우저 로컬 처리</b> — 선택한 MP3/WAV는 GitHub 서버로 업로드되지 않고 현재 브라우저 안에서만 재생·처리됩니다.</div>
@@ -123,5 +127,10 @@ footer{margin-top:38px;padding:20px 0;color:var(--muted);border-top:1px solid va
 
 <footer>MIACC · MIDAS M32 Pages Hub · 실제 오디오 처리는 Web Audio API 기반 교육용 근사입니다.</footer>
 </main>
+<script>
+const themeToggle=document.getElementById('themeToggle');
+function syncTheme(){const light=document.documentElement.dataset.theme==='light';themeToggle.textContent=light?'☾ Dark':'☀ Light';themeToggle.setAttribute('aria-pressed',String(light));themeToggle.setAttribute('aria-label',light?'Dark mode로 전환':'Light mode로 전환')}
+themeToggle.addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='light'?'dark':'light';document.documentElement.dataset.theme=next;try{localStorage.setItem('m32-theme',next)}catch{}syncTheme()});syncTheme();
+</script>
 <script src="./audio-lab.js"></script>
 </body></html>

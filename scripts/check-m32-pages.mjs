@@ -54,6 +54,26 @@ for (const name of required) {
   }
 }
 
+const hub = fs.readFileSync(hubPath, "utf8");
+const audioLab = fs.readFileSync(path.join(root, "audio-lab.html"), "utf8");
+for (const [name, html] of [["index.html", hub], ["audio-lab.html", audioLab]]) {
+  if (!/id=["']themeToggle["']/.test(html)) {
+    missing.push(`${name}: theme toggle is missing`);
+  }
+  if (!/localStorage\.setItem\(["']m32-theme["']/.test(html)) {
+    missing.push(`${name}: saved theme preference is missing`);
+  }
+  if (!/prefers-color-scheme\s*:\s*light/.test(html)) {
+    missing.push(`${name}: OS theme fallback is missing`);
+  }
+  if (!/data-theme=["']light["']/.test(html)) {
+    missing.push(`${name}: light theme tokens are missing`);
+  }
+}
+if (!/<details[^>]+class=["'][^"']*lab-disclosure/.test(hub)) {
+  missing.push("index.html: progressive Lab disclosure is missing");
+}
+
 if (missing.length) {
   console.error("Broken M32 Pages links:");
   missing.forEach((link) => console.error(`- ${link}`));

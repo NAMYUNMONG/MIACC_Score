@@ -4,27 +4,54 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>MIACC · MIDAS M32 Output Hub + Interactive Lab</title>
+<script>
+(()=>{try{const saved=localStorage.getItem('m32-theme');const theme=saved==='dark'||saved==='light'?saved:(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');document.documentElement.dataset.theme=theme}catch{document.documentElement.dataset.theme='dark'}})();
+</script>
 <style>
-:root{--bg:#0b0c0e;--panel:#121419;--panel2:#181b21;--panel3:#0e1116;--line:#2b2f38;--gold:#d4af37;--gold2:#f1d47a;--txt:#f4f5f7;--muted:#a7adb8;--green:#54d18b;--blue:#69b7ff;--red:#ff6b6b;--cyan:#66d9ef;--orange:#ffb454}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top,#171a20 0,#0b0c0e 42%);color:var(--txt);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,sans-serif;line-height:1.55}
-a{color:inherit;text-decoration:none}button,input,select{font:inherit}.wrap{max-width:1220px;margin:auto;padding:42px 22px 70px}.hero{border:1px solid #3a3320;background:linear-gradient(135deg,#171710,#101217 58%);border-radius:24px;padding:30px;box-shadow:0 24px 70px rgba(0,0,0,.32)}
+:root{color-scheme:dark;--bg:#0b0c0e;--panel:#121419;--panel2:#181b21;--panel3:#0e1116;--line:#2b2f38;--gold:#d4af37;--gold2:#f1d47a;--txt:#f4f5f7;--muted:#a7adb8;--green:#54d18b;--blue:#69b7ff;--red:#ff7a7a;--cyan:#66d9ef;--orange:#ffb454;--body-gradient:radial-gradient(circle at top,#171a20 0,#0b0c0e 42%);--hero-gradient:linear-gradient(135deg,#171710,#101217 58%);--shadow:0 24px 70px rgba(0,0,0,.32);--focus:#f1d47a}
+[data-theme="light"]{color-scheme:light;--bg:#f4f1e9;--panel:#fff;--panel2:#f8f5ed;--panel3:#ebe6da;--line:#cec6b7;--gold:#806512;--gold2:#654f0b;--txt:#1b1d21;--muted:#5d626b;--green:#227447;--blue:#24669b;--red:#a83c3c;--cyan:#176b78;--orange:#8a5416;--body-gradient:radial-gradient(circle at top,#fff 0,#f4f1e9 46%);--hero-gradient:linear-gradient(135deg,#fffaf0,#fff 62%);--shadow:0 18px 50px rgba(77,61,25,.12);--focus:#806512}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--body-gradient);color:var(--txt);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,sans-serif;line-height:1.55;min-height:100vh}
+a{color:inherit;text-decoration:none}button,input,select{font:inherit}button,a{transition:background-color .16s,border-color .16s,color .16s,transform .16s}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:3px}.wrap{max-width:1220px;margin:auto;padding:34px 22px 70px;display:flex;flex-direction:column}.hero{order:1;border:1px solid color-mix(in srgb,var(--gold) 45%,var(--line));background:var(--hero-gradient);border-radius:24px;padding:clamp(24px,4vw,42px);box-shadow:var(--shadow)}
 .eyebrow{font-size:12px;letter-spacing:.18em;color:var(--gold2);font-weight:800}.hero h1{font-size:clamp(32px,5vw,58px);margin:7px 0 10px;line-height:1.05}.hero p{margin:0;color:var(--muted);max-width:900px}.statrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.stat{border:1px solid var(--line);background:#0e1014;border-radius:14px;padding:10px 13px;color:#dfe3e9;font-size:13px}.stat b{color:var(--gold2)}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0}.btn{border:1px solid var(--line);background:var(--panel);color:var(--txt);padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}.btn:hover{border-color:#5c5030;background:#171a20}.btn.active{border-color:var(--gold);color:var(--gold2)}
-.section{margin-top:34px}.section h2{font-size:22px;margin:0 0 14px}.section h2 span{color:var(--gold2)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));border-radius:18px;padding:18px;display:flex;flex-direction:column;min-height:185px}.card.latest{border-color:#5d512f;box-shadow:inset 0 0 0 1px rgba(212,175,55,.08)}.row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.tag{font-size:11px;font-weight:800;letter-spacing:.06em;border-radius:999px;padding:5px 8px;border:1px solid #414651;color:#cdd3dd}.tag.latest{border-color:#6d5b25;color:#f1d47a;background:#1a1609}.tag.scene{border-color:#2e5d45;color:#92efb8;background:#0f1d16}.tag.ref{border-color:#31516a;color:#9ed4ff;background:#0d1720}.tag.lab{border-color:#5c4d20;color:#f3d982;background:#181307}.card h3{font-size:17px;margin:8px 0 6px}.card p{color:var(--muted);font-size:13px;margin:0}.meta{margin-top:auto;padding-top:16px;display:flex;gap:8px;flex-wrap:wrap}.open{display:inline-flex;align-items:center;gap:7px;padding:9px 11px;border-radius:10px;border:1px solid #4a4024;background:#18150c;color:var(--gold2);font-weight:800;font-size:13px}.open:hover{background:#211b0b;border-color:var(--gold)}.subtle{display:inline-flex;padding:9px 11px;border-radius:10px;border:1px solid var(--line);font-size:13px;color:#d6d9df}.note{margin-top:28px;border-left:3px solid var(--gold);background:#12130f;border-radius:12px;padding:14px 16px;color:#c8cdd5;font-size:13px}.footer{margin-top:42px;color:#777f8b;font-size:12px;text-align:center}.hidden{display:none!important}
+.site-header{position:sticky;top:0;z-index:30;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(16px)}.site-header-inner{max-width:1220px;min-height:64px;margin:auto;padding:8px 22px;display:flex;align-items:center;gap:18px}.brand{font-weight:900;letter-spacing:.08em;white-space:nowrap}.brand span{color:var(--gold)}.anchor-nav{display:flex;gap:4px;align-items:center;overflow:auto;scrollbar-width:none}.anchor-nav::-webkit-scrollbar{display:none}.anchor-nav a{min-height:44px;display:inline-flex;align-items:center;padding:0 10px;border-radius:10px;color:var(--muted);font-size:13px;font-weight:750;white-space:nowrap}.anchor-nav a:hover{background:var(--panel2);color:var(--txt)}.theme-toggle{margin-left:auto;min-width:44px;min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--txt);display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 12px;cursor:pointer;font-weight:800}.theme-icon{font-size:17px}.theme-label{font-size:12px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.hero-actions .open{min-height:46px}.hero-actions .subtle{min-height:46px;align-items:center}.quick-access{order:2;margin-top:34px}.quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.quick-card{min-height:165px}.toolbar{order:3;display:flex;gap:10px;overflow:auto;margin:30px 0 0;padding:4px 2px 8px;scrollbar-width:thin}.btn{min-height:44px;border:1px solid var(--line);background:var(--panel);color:var(--txt);padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;white-space:nowrap}.btn:hover{border-color:var(--gold);background:var(--panel2)}.btn.active{border-color:var(--gold);color:var(--gold2);background:color-mix(in srgb,var(--gold) 10%,var(--panel))}
+.section{margin-top:56px;scroll-margin-top:88px}.section[data-group="guide"]{order:4}.section[data-group="scene"]{order:5}.section[data-group="ref"]{order:6}.section[data-group="lab"]{order:7}.section h2,.quick-access h2{font-size:22px;margin:0 0 14px}.section h2 span,.quick-access h2 span{color:var(--gold2)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));border-radius:18px;padding:18px;display:flex;flex-direction:column;min-height:185px}.card.latest{border-color:color-mix(in srgb,var(--gold) 65%,var(--line));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 10%,transparent)}.row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.tag{font-size:11px;font-weight:800;letter-spacing:.06em;border-radius:999px;padding:5px 8px;border:1px solid var(--line);color:var(--muted)}.tag.latest,.tag.lab{border-color:var(--gold);color:var(--gold2);background:color-mix(in srgb,var(--gold) 10%,var(--panel))}.tag.scene{border-color:var(--green);color:var(--green);background:color-mix(in srgb,var(--green) 8%,var(--panel))}.tag.ref{border-color:var(--blue);color:var(--blue);background:color-mix(in srgb,var(--blue) 8%,var(--panel))}.card h3{font-size:17px;margin:8px 0 6px}.card p{color:var(--muted);font-size:13px;margin:0;overflow-wrap:anywhere}.meta{margin-top:auto;padding-top:16px;display:flex;gap:8px;flex-wrap:wrap}.open{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:9px 12px;border-radius:10px;border:1px solid var(--gold);background:color-mix(in srgb,var(--gold) 10%,var(--panel));color:var(--gold2);font-weight:800;font-size:13px}.open:hover{background:color-mix(in srgb,var(--gold) 18%,var(--panel));transform:translateY(-1px)}.subtle{display:inline-flex;padding:9px 11px;border-radius:10px;border:1px solid var(--line);font-size:13px;color:var(--muted)}.note{order:8;margin-top:36px;border-left:3px solid var(--gold);background:var(--panel);border-radius:12px;padding:14px 16px;color:var(--muted);font-size:13px}.footer{order:9;margin-top:42px;color:var(--muted);font-size:12px;text-align:center}.hidden{display:none!important}
 
 /* Interactive Lab */
 .lab-shell{border:1px solid #4f4527;background:linear-gradient(180deg,#11130f,#0d0f13);border-radius:22px;overflow:hidden;box-shadow:0 20px 55px rgba(0,0,0,.28)}.lab-head{padding:20px 20px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}.lab-head h3{margin:0 0 4px;font-size:20px}.lab-head p{margin:0;color:var(--muted);font-size:13px;max-width:800px}.lab-tabs{display:flex;gap:8px;flex-wrap:wrap}.lab-tab{border:1px solid var(--line);background:#11141a;color:#ccd2dc;padding:9px 12px;border-radius:10px;cursor:pointer;font-weight:800}.lab-tab.active{border-color:var(--gold);color:var(--gold2);background:#19160d}.lab-pane{padding:18px}.lab-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.module{border:1px solid var(--line);background:#101319;border-radius:16px;padding:16px}.module h4{margin:0 0 12px;font-size:15px}.module h4 small{display:block;color:var(--muted);font-weight:500;margin-top:2px}.control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.control{border:1px solid #292e37;background:#0d1015;border-radius:12px;padding:11px}.control label{display:flex;justify-content:space-between;gap:12px;color:#dce1e8;font-size:12px;font-weight:750;margin-bottom:8px}.control output{color:var(--gold2);font-variant-numeric:tabular-nums}.control input[type=range]{width:100%;accent-color:var(--gold)}.control select,.control input[type=file]{width:100%;border:1px solid #333945;background:#11151b;color:var(--txt);border-radius:8px;padding:8px}.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #2c323b;background:#0d1015;border-radius:11px;padding:9px 10px;margin-bottom:9px}.toggle{appearance:none;width:42px;height:22px;border-radius:999px;background:#333943;position:relative;cursor:pointer;transition:.2s}.toggle:checked{background:#806a24}.toggle:before{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:white;top:3px;left:3px;transition:.2s}.toggle:checked:before{left:23px}.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid #36404c;background:#10151c;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:800;color:#cdd5df}.badge.ok{border-color:#27593e;color:#85e5ae}.badge.warn{border-color:#6c5424;color:#ffd781}.badge.danger{border-color:#6d2d2d;color:#ff9898}.audio-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.audio-btn{border:1px solid #414957;background:#151922;color:#eef1f5;border-radius:10px;padding:9px 11px;cursor:pointer;font-weight:800}.audio-btn.primary{border-color:#665621;background:#1a160b;color:var(--gold2)}.audio-btn.danger{border-color:#613434;color:#ffb2b2;background:#1c1010}.meter-stack{display:grid;gap:9px}.meter-row{display:grid;grid-template-columns:110px 1fr 56px;gap:9px;align-items:center;font-size:12px}.meter{height:10px;border-radius:999px;background:#252a32;overflow:hidden;border:1px solid #303640}.meter>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4cae78,#d3af3f,#e26b63);transition:width .08s linear}.meter-value{font-variant-numeric:tabular-nums;color:#bcc4cf;text-align:right}.scope{width:100%;height:140px;border:1px solid #2c323b;background:#090b0e;border-radius:12px;display:block}.sigflow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:12px}.sigbox{border:1px solid #323842;background:#12161c;padding:9px 10px;border-radius:10px;font-size:12px;font-weight:800}.sigbox.gold{border-color:#6b5723;color:var(--gold2);background:#18150d}.sigbox.green{border-color:#2d6646;color:#91eab6}.sigbox.red{border-color:#713333;color:#ff9d9d}.arrow{color:#69717e;font-weight:900}.readout{border:1px solid #2d333d;background:#0c0f14;border-radius:12px;padding:12px;margin-top:12px;color:#cbd2dc;font-size:13px}.readout b{color:var(--gold2)}.eq-bands{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.eq-band{border:1px solid #2d333c;background:#0d1116;border-radius:12px;padding:10px}.eq-band h5{margin:0 0 8px;font-size:12px;color:var(--cyan)}.eq-band .mini{font-size:11px;color:var(--muted);margin-top:7px}.preset-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.preset{border:1px solid #38414c;background:#11161d;color:#dce3eb;border-radius:9px;padding:7px 10px;cursor:pointer;font-size:12px;font-weight:800}.preset:hover{border-color:#605224}.fx-diagram{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:center}.fx-node{border:1px solid #303641;background:#0e1217;border-radius:12px;padding:12px;text-align:center}.fx-node strong{display:block;font-size:13px}.fx-node small{color:var(--muted)}.fx-node.wet{border-color:#5c4c20;background:#17140c}.fx-status{margin-top:12px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.fx-stat{border:1px solid #2e343d;background:#0d1015;border-radius:11px;padding:10px}.fx-stat span{display:block;color:var(--muted);font-size:11px}.fx-stat b{font-size:15px;color:#e8edf3;font-variant-numeric:tabular-nums}.warnbox{margin-top:12px;border:1px solid #6a3c31;background:#1b100d;color:#ffb2a3;border-radius:12px;padding:11px;font-size:12px}.info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.info-card{border:1px solid #2d333c;background:#0e1116;border-radius:12px;padding:10px}.info-card b{display:block;font-size:12px;color:#e6ebf2}.info-card span{font-size:11px;color:var(--muted)}.lab-foot{padding:12px 18px;border-top:1px solid var(--line);color:#858e9a;font-size:11px;background:#0c0e12}
-@media(max-width:900px){.lab-grid{grid-template-columns:1fr}.eq-bands{grid-template-columns:repeat(2,minmax(0,1fr))}.fx-diagram{grid-template-columns:1fr}.fx-diagram .arrow{transform:rotate(90deg);text-align:center}.fx-status,.info-grid{grid-template-columns:1fr}}
-@media(max-width:760px){.grid{grid-template-columns:1fr}.hero{padding:22px}.wrap{padding:24px 14px 50px}.control-grid{grid-template-columns:1fr}.eq-bands{grid-template-columns:1fr}.meter-row{grid-template-columns:90px 1fr 50px}}
+.lab-disclosure{border:0}.lab-disclosure>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:58px;margin-bottom:14px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--panel);cursor:pointer;font-weight:850}.lab-disclosure>summary::-webkit-details-marker{display:none}.lab-disclosure>summary::after{content:"＋";font-size:22px;color:var(--gold2)}.lab-disclosure[open]>summary::after{content:"−"}
+.wrap,.site-header-inner,.hero,.quick-access,.section,.grid,.quick-grid,.card,.lab-grid,.control-grid{min-width:0}.wrap,.site-header-inner{width:100%}.anchor-nav{min-width:0;max-width:100%}.card>*{min-width:0}.hero p,.quick-card,.stat{overflow-wrap:anywhere}
+[data-theme="light"] .lab-shell{background:linear-gradient(180deg,#fffaf0,#f8f5ed);border-color:#c7ad64;box-shadow:0 18px 45px rgba(77,61,25,.12)}[data-theme="light"] .lab-tab,[data-theme="light"] .module,[data-theme="light"] .control,[data-theme="light"] .toggle-row,[data-theme="light"] .badge,[data-theme="light"] .audio-btn,[data-theme="light"] .readout,[data-theme="light"] .eq-band,[data-theme="light"] .preset,[data-theme="light"] .fx-node,[data-theme="light"] .fx-stat,[data-theme="light"] .info-card,[data-theme="light"] .lab-foot,[data-theme="light"] .sigbox{background:var(--panel);border-color:var(--line);color:var(--txt)}[data-theme="light"] .lab-tab.active,[data-theme="light"] .audio-btn.primary,[data-theme="light"] .sigbox.gold,[data-theme="light"] .fx-node.wet{background:#fff7d9;border-color:var(--gold);color:var(--gold2)}[data-theme="light"] .control label,[data-theme="light"] .fx-stat b,[data-theme="light"] .info-card b{color:var(--txt)}[data-theme="light"] .control select,[data-theme="light"] .control input[type=file]{background:#fff;color:var(--txt);border-color:var(--line)}[data-theme="light"] .warnbox{background:#fff0ec;color:var(--red)}
+@media(max-width:1023px){.site-header-inner{gap:10px}.anchor-nav{order:3;flex-basis:100%}.site-header-inner{flex-wrap:wrap}.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lab-grid{grid-template-columns:1fr}.eq-bands{grid-template-columns:repeat(2,minmax(0,1fr))}.fx-diagram{grid-template-columns:1fr}.fx-diagram .arrow{transform:rotate(90deg);text-align:center}.fx-status,.info-grid{grid-template-columns:1fr}}
+@media(max-width:767px){.site-header-inner{padding:7px 14px}.theme-label{display:none}.anchor-nav{margin:0 -6px}.grid,.quick-grid{grid-template-columns:1fr}.hero{padding:22px}.wrap{padding:24px 14px 50px}.control-grid{grid-template-columns:1fr}.eq-bands{grid-template-columns:1fr}.meter-row{grid-template-columns:84px 1fr 48px}.section{margin-top:42px}.hero-actions>*{width:100%;justify-content:center}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="brand" href="#overview" aria-label="M32 Output Hub 처음으로">MIACC <span>· M32</span></a>
+    <nav class="anchor-nav" aria-label="M32 Hub 섹션">
+      <a href="#overview">Overview</a><a href="#manuals">Manuals</a><a href="#scenes">Scenes</a><a href="#interactive-lab">Labs</a><a href="#references">References</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false"><span class="theme-icon" aria-hidden="true">☀</span><span class="theme-label">Light</span></button>
+  </div>
+</header>
 <div class="wrap">
-  <section class="hero">
+  <section class="hero" id="overview">
     <div class="eyebrow">MIACC · MIDAS M32 PROJECT</div>
     <h1>M32 Output Hub</h1>
     <p>지금까지 제작된 M32 매뉴얼과 Scene 파일을 한 화면에서 확인하고, <b style="color:var(--gold2)">Interactive Lab</b>에서 FX Send/Return과 Channel EQ·Gate·Compressor의 동작을 직접 체험할 수 있습니다.</p>
+    <div class="hero-actions"><a class="open" href="./audio-lab.html">M32 Audio Lab 열기 →</a><a class="subtle" href="./MIDAS_M32_FX_Setup_Guide_Church_V2.html">최신 FX Guide 보기</a></div>
     <div class="statrow"><div class="stat"><b>3</b> Verified Guides</div><div class="stat"><b>1</b> Verified Scene</div><div class="stat"><b>3</b> Interactive Labs</div><div class="stat"><b>1</b> Official Reference</div></div>
+  </section>
+
+  <section class="quick-access" aria-labelledby="quick-title">
+    <h2 id="quick-title"><span>QUICK.</span> 바로 시작하기</h2>
+    <div class="quick-grid">
+      <article class="card latest quick-card"><span class="tag latest">LATEST · AUDIO</span><h3>M32 Audio Lab</h3><p>ORIGINAL과 PROCESSED를 비교하며 실제 음원으로 채널 processing을 연습합니다.</p><div class="meta"><a class="open" href="./audio-lab.html">실습 시작 →</a></div></article>
+      <article class="card latest quick-card"><span class="tag latest">LATEST · GUIDE</span><h3>FX Setup Guide V2</h3><p>교회 FOH 환경의 FX Send/Return과 실전 gain structure를 확인합니다.</p><div class="meta"><a class="open" href="./MIDAS_M32_FX_Setup_Guide_Church_V2.html">가이드 열기 →</a></div></article>
+      <article class="card latest quick-card"><span class="tag scene">LATEST · SCENE</span><h3>User Routing V2</h3><p>11시 예배 User Routing 기반 Scene을 바로 다운로드합니다.</p><div class="meta"><a class="open" href="./MIACC_M32_11AM_UserRouting_V2.scn" download>Scene 저장 →</a></div></article>
+    </div>
   </section>
 
   <div class="toolbar">
@@ -43,6 +70,8 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}.wrap{max-
       <article class="card latest item" data-type="lab"><div class="row"><span class="tag lab">INTERACTIVE · CHANNEL</span></div><h3>EQ · Gate · Compressor Lab</h3><p>M32 Channel Strip 중 EQ, Gate, Compressor만 골라 파라미터를 직접 바꿔보고 입력/출력 레벨 변화를 확인합니다.</p><div class="meta"><a class="open" href="#channel-lab" data-open-lab="channel">시뮬레이터 열기 →</a></div></article>
     </div>
 
+    <details class="lab-disclosure" id="labPractice">
+      <summary>FX / Channel Interactive Lab 펼치기</summary>
     <div class="lab-shell">
       <div class="lab-head">
         <div><h3>Interactive Audio Lab</h3><p>브라우저에서 로컬 오디오 파일 또는 마이크 입력을 사용합니다. 교육용 근사 시뮬레이션이며 M32 DSP 알고리즘을 1:1로 복제한 에뮬레이터는 아닙니다.</p></div>
@@ -152,9 +181,10 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}.wrap{max-
 
       <div class="lab-foot">AudioContext는 사용자 동작 후 시작됩니다. 마이크 사용 시 브라우저가 권한을 요청할 수 있습니다. 큰 스피커에서 테스트할 때는 처음에는 낮은 볼륨으로 시작하세요.</div>
     </div>
+    </details>
   </section>
 
-  <section class="section group" data-group="guide">
+  <section class="section group" data-group="guide" id="manuals">
     <h2><span>01.</span> Manuals & Guides</h2>
     <div class="grid">
       <article class="card item" data-type="guide"><div class="row"><span class="tag">복원 필요 · CORE</span></div><h3>M32 완전 초기화 · 예배 세팅 가이드</h3><p>압축 조각의 checksum과 HTML 끝부분이 손상되어 원본을 다시 확보해야 합니다.</p></article>
@@ -165,7 +195,7 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}.wrap{max-
     </div>
   </section>
 
-  <section class="section group" data-group="scene">
+  <section class="section group" data-group="scene" id="scenes">
     <h2><span>02.</span> Scene Files</h2>
     <div class="grid">
       <article class="card latest item" data-type="scene"><div class="row"><span class="tag scene">SCENE · LATEST</span></div><h3>11AM User Routing V2</h3><p>11시 예배용으로 Local Input을 User Routing에 매핑하고 CH1~10에 필요한 소스를 모은 개편 Scene.</p><div class="meta"><a class="open" href="./MIACC_M32_11AM_UserRouting_V2.scn" download>파일 저장 →</a></div></article>
@@ -173,11 +203,10 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}.wrap{max-
     </div>
   </section>
 
-  <section class="section group" data-group="ref">
+  <section class="section group" data-group="ref" id="references">
     <h2><span>03.</span> References</h2>
     <div class="grid">
       <article class="card item" data-type="ref"><div class="row"><span class="tag ref">OFFICIAL REFERENCE</span></div><h3>MIDAS M32 User Manual</h3><p>제조사 영문 공식 매뉴얼은 저작권과 최신 버전 유지를 위해 MIDAS 공식 사이트에서 확인합니다.</p><div class="meta"><a class="open" href="https://www.midasconsoles.com/" target="_blank" rel="noopener">MIDAS 공식 사이트 →</a></div></article>
-      <article class="card item" data-type="ref"><div class="row"><span class="tag">REFERENCE · 복원 필요</span></div><h3>StudioLive Reference Manual</h3><p>업로드가 003b 조각에서 중단되어 완전한 원본을 다시 확보해야 합니다. 깨진 링크는 제공하지 않습니다.</p></article>
     </div>
   </section>
 
@@ -185,10 +214,27 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}.wrap{max-
   <div class="footer">MIACC · MIDAS M32 Output Hub · Interactive Lab</div>
 </div>
 <script>
+// ---------- Theme ----------
+const themeToggle=document.getElementById('themeToggle');
+function syncThemeToggle(){
+  const isLight=document.documentElement.dataset.theme==='light';
+  themeToggle.setAttribute('aria-pressed',String(isLight));
+  themeToggle.setAttribute('aria-label',isLight?'Dark mode로 전환':'Light mode로 전환');
+  themeToggle.querySelector('.theme-icon').textContent=isLight?'☾':'☀';
+  themeToggle.querySelector('.theme-label').textContent=isLight?'Dark':'Light';
+}
+themeToggle.addEventListener('click',()=>{
+  const next=document.documentElement.dataset.theme==='light'?'dark':'light';
+  document.documentElement.dataset.theme=next;
+  try{localStorage.setItem('m32-theme',next)}catch{}
+  syncThemeToggle();
+});
+syncThemeToggle();
+
 // ---------- Hub filter ----------
 const buttons=[...document.querySelectorAll('[data-filter]')];
 buttons.forEach(b=>b.addEventListener('click',()=>{
-  buttons.forEach(x=>x.classList.remove('active')); b.classList.add('active');
+  buttons.forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')}); b.classList.add('active');b.setAttribute('aria-pressed','true');
   const f=b.dataset.filter;
   document.querySelectorAll('.item').forEach(i=>i.classList.toggle('hidden',f!=='all'&&i.dataset.type!==f));
   document.querySelectorAll('.group').forEach(g=>{
@@ -197,15 +243,18 @@ buttons.forEach(b=>b.addEventListener('click',()=>{
     g.classList.toggle('hidden',!visible);
   });
 }));
+buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.classList.contains('active'))));
 
 // ---------- Lab tabs ----------
 const labTabs=[...document.querySelectorAll('[data-labtab]')];
 function openLab(name){
-  labTabs.forEach(t=>t.classList.toggle('active',t.dataset.labtab===name));
+  document.getElementById('labPractice').open=true;
+  labTabs.forEach(t=>{const selected=t.dataset.labtab===name;t.classList.toggle('active',selected);t.setAttribute('aria-pressed',String(selected))});
   document.querySelectorAll('[data-labpane]').forEach(p=>p.classList.toggle('hidden',p.dataset.labpane!==name));
 }
 labTabs.forEach(t=>t.addEventListener('click',()=>openLab(t.dataset.labtab)));
-document.querySelectorAll('[data-open-lab]').forEach(a=>a.addEventListener('click',()=>openLab(a.dataset.openLab)));
+labTabs.forEach(t=>t.setAttribute('aria-pressed',String(t.classList.contains('active'))));
+document.querySelectorAll('[data-open-lab]').forEach(a=>a.addEventListener('click',()=>{openLab(a.dataset.openLab);requestAnimationFrame(()=>document.getElementById(a.getAttribute('href').slice(1)).scrollIntoView({block:'start'}))}));
 
 // ---------- Helpers ----------
 const dbToGain=db=>Math.pow(10,db/20);
