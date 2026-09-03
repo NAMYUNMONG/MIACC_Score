@@ -10,8 +10,7 @@
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;line-height:1.6}
 .wrap{max-width:1180px;margin:auto;padding:26px}.hero{padding:38px 0 26px;border-bottom:1px solid var(--edge)}
 .eyebrow{font:700 12px ui-monospace,monospace;letter-spacing:1.7px;color:var(--gold2)}h1{font-size:38px;line-height:1.15;margin:10px 0}h2{margin:8px 0 12px}.muted{color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:24px 0}.card,.lab{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:18px}
-.card h3{margin:6px 0}.tag{display:inline-block;border:1px solid #6d5b25;border-radius:999px;padding:3px 9px;color:var(--gold2);font:700 11px ui-monospace,monospace}
+.lab{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:18px}
 .ok{color:var(--green)}.warn{color:var(--gold2)}a{color:var(--gold2)}
 button,.btn{background:color-mix(in srgb,var(--gold) 12%,var(--panel));color:var(--gold2);border:1px solid var(--gold);border-radius:8px;padding:9px 12px;cursor:pointer;font:inherit}.btn input{display:none}button:focus-visible,a:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
 button.active{background:#4a3b12;border-color:var(--gold2)}button:disabled{opacity:.45;cursor:not-allowed}
@@ -28,22 +27,15 @@ input[type=range]{width:100%}.meter{height:11px;background:#0b0c0d;border:1px so
 footer{margin-top:38px;padding:20px 0;color:var(--muted);border-top:1px solid var(--edge);font-size:13px}
 .themebar{display:flex;justify-content:space-between;align-items:center;gap:12px}.theme-toggle{min-width:44px;min-height:44px;border-radius:12px;font-weight:800}[data-theme="light"] .module,[data-theme="light"] .note,[data-theme="light"] .box,[data-theme="light"] .eqband,[data-theme="light"] .meterBox{background:var(--panel2)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
-@media(max-width:900px){.cols,.grid{grid-template-columns:1fr}.eqgrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.row{grid-template-columns:1fr}.meters,.eqgrid{grid-template-columns:1fr}.wrap{padding:16px}h1{font-size:31px}}
+@media(max-width:900px){.cols{grid-template-columns:1fr}.eqgrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.row{grid-template-columns:1fr}.meters,.eqgrid{grid-template-columns:1fr}.wrap{padding:16px}h1{font-size:31px}}
 </style>
 </head>
 <body><main class="wrap">
 <section class="hero">
 <div class="themebar"><div class="eyebrow">MIACC · MIDAS M32</div><button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">☀ Light</button></div><h1>M32 Audio Lab</h1>
 <p><a href="./index.html">← M32 Output Hub로 돌아가기</a></p>
-<p class="muted">교회 예배·찬양팀용 M32 자료와 실제 음원 기반 Interactive Lab을 한 곳에서 연습합니다.</p>
+<p class="muted">하나의 실제 음원으로 Gate, EQ, Compressor와 Reverb Send/Return 신호 흐름을 연습하는 통합 시뮬레이터입니다.</p>
 <div class="note"><b class="ok">브라우저 로컬 처리</b> — 선택한 MP3/WAV는 GitHub 서버로 업로드되지 않고 현재 브라우저 안에서만 재생·처리됩니다.</div>
-</section>
-
-<section class="grid">
-<article class="card"><span class="tag">CORE</span><h3>M32 교회 운영 매뉴얼</h3><p class="muted">Routing, Bus, P16, 예배 운용 중심 메인 매뉴얼.</p><p><a class="back-link" href="./MIDAS_M32_Church_Manual_V1.html">매뉴얼 열기 →</a></p></article>
-<article class="card"><span class="tag">FOH</span><h3>FOH Live Mixing Guide</h3><p class="muted">Gain Staging, Full Band Mix, 긴급 대응 중심.</p><p><a class="back-link" href="./MIDAS_M32_FOH_Live_Mixing_Guide_V1.html">가이드 열기 →</a></p></article>
-<article class="card"><span class="tag">FX</span><h3>FX Setup Guide</h3><p class="muted">FX Send/Return, Bus Master, FX Return 운용.</p><p><a class="back-link" href="./MIDAS_M32_FX_Setup_Guide_Church_V2.html">가이드 열기 →</a></p></article>
-<article class="card"><span class="tag">SCENE</span><h3>11AM User Routing V2</h3><p class="muted">11시 예배용 User Routing 기반 Scene.</p><p><a class="back-link" href="./MIACC_M32_11AM_UserRouting_V2.scn" download>Scene 다운로드 →</a></p></article>
 </section>
 
 <section class="lab">
