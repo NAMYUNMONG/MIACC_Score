@@ -63,14 +63,12 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}button,a{t
   </div>
 
   <section class="section group" data-group="lab" id="interactive-lab">
-    <h2><span>00.</span> M32 Interactive Lab</h2>
+    <h2><span>00.</span> Unified M32 Audio Lab</h2>
     <div class="grid" style="margin-bottom:14px">
-      <article class="card latest item" data-type="lab"><div class="row"><span class="tag latest">LATEST · AUDIO</span></div><h3>M32 Audio Lab</h3><p>ORIGINAL/PROCESSED 모니터를 전환하며 Gate, 4-band EQ, Compressor, Channel Fader와 FX Send/Return 신호 흐름을 실제 오디오로 연습합니다.</p><div class="meta"><a class="open" href="./audio-lab.html">Audio Lab 열기 →</a></div></article>
-      <article class="card latest item" data-type="lab"><div class="row"><span class="tag lab">INTERACTIVE · FX</span></div><h3>FX Send / Return Simulator</h3><p>Channel Fader, Pre/Post-Fader Tap, FX Send, Bus Master, FX Return의 관계를 직접 조작하고 실제 오디오로 들을 수 있습니다.</p><div class="meta"><a class="open" href="#fx-lab" data-open-lab="fx">시뮬레이터 열기 →</a></div></article>
-      <article class="card latest item" data-type="lab"><div class="row"><span class="tag lab">INTERACTIVE · CHANNEL</span></div><h3>EQ · Gate · Compressor Lab</h3><p>M32 Channel Strip 중 EQ, Gate, Compressor만 골라 파라미터를 직접 바꿔보고 입력/출력 레벨 변화를 확인합니다.</p><div class="meta"><a class="open" href="#channel-lab" data-open-lab="channel">시뮬레이터 열기 →</a></div></article>
+      <article class="card latest item" data-type="lab"><div class="row"><span class="tag latest">UNIFIED · AUDIO</span></div><h3>M32 Audio Lab</h3><p>하나의 실제 오디오 신호로 Gate, 4-band EQ, Compressor, Channel Fader와 Reverb Send/Return을 연습하고 시그널 라인에서 각 프로세서를 독립적으로 bypass합니다.</p><div class="meta"><a class="open" href="./audio-lab.html">통합 Audio Lab 열기 →</a></div></article>
     </div>
 
-    <details class="lab-disclosure" id="labPractice">
+    <details class="lab-disclosure" id="labPractice" hidden>
       <summary>FX / Channel Interactive Lab 펼치기</summary>
     <div class="lab-shell">
       <div class="lab-head">
@@ -245,6 +243,7 @@ buttons.forEach(b=>b.addEventListener('click',()=>{
 buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.classList.contains('active'))));
 
 // ---------- Lab tabs ----------
+if(!document.getElementById('labPractice').hidden){
 const labTabs=[...document.querySelectorAll('[data-labtab]')];
 function openLab(name){
   document.getElementById('labPractice').open=true;
@@ -373,6 +372,7 @@ function animate(){
   if(ch.ctx&&ch.inputAn){setMeter(chInputMeter,chInputDb,rmsDb(ch.inputAn));setMeter(chGateMeter,chGateDb,rmsDb(ch.gateAn));setMeter(chCompMeter,chCompDb,rmsDb(ch.compAn));setMeter(chOutputMeter,chOutputDb,rmsDb(ch.outAn));drawScope(eqScope,ch.outAn)}
   requestAnimationFrame(animate);
 }animate();
+}
 </script>
 </body>
 </html>

@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "node scripts/build-m32-pages.mjs",
-    "build": "tsc -b && vite build && node scripts/check-m32-pages.mjs && node scripts/check-main-portal.mjs",
+    "build": "tsc -b && vite build && node scripts/check-m32-pages.mjs && node scripts/check-audio-lab.mjs && node scripts/check-main-portal.mjs",
     "check:m32": "node scripts/check-m32-pages.mjs",
+    "check:audio-lab": "node scripts/check-audio-lab.mjs",
     "check:portal": "node scripts/check-main-portal.mjs",
     "preview": "vite preview"
   },

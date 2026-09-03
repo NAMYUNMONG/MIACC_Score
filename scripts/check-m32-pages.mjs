@@ -56,6 +56,7 @@ for (const name of required) {
 
 const hub = fs.readFileSync(hubPath, "utf8");
 const audioLab = fs.readFileSync(path.join(root, "audio-lab.html"), "utf8");
+const audioLabJs = fs.readFileSync(path.join(root, "audio-lab.js"), "utf8");
 for (const [name, html] of [["index.html", hub], ["audio-lab.html", audioLab]]) {
   if (!/id=["']themeToggle["']/.test(html)) {
     missing.push(`${name}: theme toggle is missing`);
@@ -70,8 +71,21 @@ for (const [name, html] of [["index.html", hub], ["audio-lab.html", audioLab]]) 
     missing.push(`${name}: light theme tokens are missing`);
   }
 }
-if (!/<details[^>]+class=["'][^"']*lab-disclosure/.test(hub)) {
-  missing.push("index.html: progressive Lab disclosure is missing");
+if (!/<details[^>]+class=["'][^"']*lab-disclosure[^>]+hidden/.test(hub)) {
+  missing.push("index.html: legacy inline Lab must remain hidden behind the unified Audio Lab link");
+}
+for (const processor of ["gate", "eq", "comp", "fx"]) {
+  if (!new RegExp(`data-processor-toggle=["']${processor}["']`).test(audioLab)) {
+    missing.push(`audio-lab.html: ${processor} bypass control is missing`);
+  }
+}
+for (const node of ["gateWet", "gateDry", "eqWet", "eqDry", "compWet", "compDry", "fxEnable"]) {
+  if (!audioLabJs.includes(node)) {
+    missing.push(`audio-lab.js: fixed bypass node ${node} is missing`);
+  }
+}
+if (!/processorState=\{gate:true,eq:true,comp:true,fx:true\}/.test(audioLabJs)) {
+  missing.push("audio-lab.js: independent processor state is missing");
 }
 
 if (missing.length) {

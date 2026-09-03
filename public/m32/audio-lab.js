@@ -1,151 +1,45 @@
 (()=>{"use strict";
-const $=id=>document.getElementById(id);
-let ctx,sourceNode,mediaSourceNode,micStream,micNode;
-let inputAnalyser,gateAnalyser,compAnalyser,dryAnalyser,fxAnalyser,mainAnalyser;
-let gateGain,eq=[],comp,makeupGain,faderGain,sendGain,busGain,convolver,returnGain,mainMix,processedGain,rawGain,master;
-let postTap=true,monitorProcessed=true,raf=0,impulseKey="",sourceKind="";
-const player=$("player");
-const dbToGain=db=>db<=-60?0:Math.pow(10,db/20);
-const fmtDb=v=>Number(v).toFixed(Number(v)%1?1:0)+" dB";
-const setText=(id,v)=>{$(id).textContent=v};
+const $=id=>document.getElementById(id),player=$("player"),dbToGain=db=>db<=-60?0:10**(db/20),fmtDb=v=>(+v>0?"+":"")+(+v).toFixed(+v%1?1:0)+" dB",setText=(id,v)=>{$(id).textContent=v};
+let ctx,sourceNode,mediaSourceNode,micStream,micNode,inputAnalyser,gateAnalyser,compAnalyser,dryAnalyser,fxAnalyser,mainAnalyser;
+let gateControl,gateWet,gateDry,eq=[],eqWet,eqDry,eqSum,comp,compWet,compDry,makeupGain,faderGain,preTapGain,postTapGain,sendGain,busGain,convolver,returnGain,fxEnable,mainMix,processedGain,rawGain,master;
+let postTap=true,monitorProcessed=true,raf=0,impulseKey="";
+const processorState={gate:true,eq:true,comp:true,fx:true},processorLabels={gate:"Gate",eq:"EQ",comp:"Comp",fx:"Reverb"},processorModules={gate:"moduleGate",eq:"moduleEq",comp:"moduleComp",fx:"moduleFx"};
+function setParam(param,value,time=.015){if(!ctx||!param)return;param.cancelScheduledValues(ctx.currentTime);param.setTargetAtTime(value,ctx.currentTime,time)}
+function setPair(wet,dry,on){setParam(wet.gain,on?1:0);setParam(dry.gain,on?0:1)}
+function updateProcessorUI(name){const on=processorState[name],label=processorLabels[name];document.querySelectorAll(`[data-processor-toggle="${name}"]`).forEach(button=>{button.setAttribute("aria-pressed",String(on));button.setAttribute("aria-label",`${label} ${on?"끄기":"켜기"}`);const small=button.querySelector("small");if(small)small.textContent=on?"ON":"OFF";else button.textContent=`${label} ${on?"ON":"OFF"}`});$(processorModules[name]).classList.toggle("is-bypassed",!on)}
+function applyProcessorState(){Object.keys(processorState).forEach(updateProcessorUI);if(!ctx)return;setPair(gateWet,gateDry,processorState.gate);setPair(eqWet,eqDry,processorState.eq);setPair(compWet,compDry,processorState.comp);setParam(fxEnable.gain,processorState.fx?1:0,.025);updateComp()}
+function toggleProcessor(name){processorState[name]=!processorState[name];applyProcessorState()}
 function ensureCtx(){
- if(ctx)return;
- if(!window.AudioContext&&!window.webkitAudioContext)throw new Error("이 브라우저는 Web Audio API를 지원하지 않습니다.");
- ctx=new (window.AudioContext||window.webkitAudioContext)();
- inputAnalyser=ctx.createAnalyser();gateAnalyser=ctx.createAnalyser();compAnalyser=ctx.createAnalyser();dryAnalyser=ctx.createAnalyser();fxAnalyser=ctx.createAnalyser();mainAnalyser=ctx.createAnalyser();
- [inputAnalyser,gateAnalyser,compAnalyser,dryAnalyser,fxAnalyser,mainAnalyser].forEach(a=>{a.fftSize=1024;a.smoothingTimeConstant=.75});
- gateGain=ctx.createGain();gateGain.gain.value=1;
- eq=[0,1,2,3].map(()=>ctx.createBiquadFilter());
- eq.forEach(f=>f.type="peaking");
- comp=ctx.createDynamicsCompressor();
- makeupGain=ctx.createGain();faderGain=ctx.createGain();sendGain=ctx.createGain();busGain=ctx.createGain();convolver=ctx.createConvolver();returnGain=ctx.createGain();mainMix=ctx.createGain();processedGain=ctx.createGain();rawGain=ctx.createGain();master=ctx.createGain();
- processedGain.gain.value=1;rawGain.gain.value=0;
- master.gain.value=.65;
- inputAnalyser.connect(gateGain);
- gateGain.connect(gateAnalyser);gateAnalyser.connect(eq[0]);eq[0].connect(eq[1]);eq[1].connect(eq[2]);eq[2].connect(eq[3]);eq[3].connect(comp);comp.connect(compAnalyser);compAnalyser.connect(makeupGain);makeupGain.connect(faderGain);faderGain.connect(dryAnalyser);dryAnalyser.connect(mainMix);
- sendGain.connect(busGain);busGain.connect(convolver);convolver.connect(returnGain);returnGain.connect(fxAnalyser);fxAnalyser.connect(mainMix);
- mainMix.connect(mainAnalyser);mainAnalyser.connect(processedGain);processedGain.connect(master);rawGain.connect(master);master.connect(ctx.destination);
- rebuildTap();updateAll();startMeters();
+ if(ctx)return ctx;const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass)throw Error("이 브라우저는 Web Audio API를 지원하지 않습니다.");ctx=new AudioContextClass();
+ inputAnalyser=ctx.createAnalyser();gateAnalyser=ctx.createAnalyser();compAnalyser=ctx.createAnalyser();dryAnalyser=ctx.createAnalyser();fxAnalyser=ctx.createAnalyser();mainAnalyser=ctx.createAnalyser();[inputAnalyser,gateAnalyser,compAnalyser,dryAnalyser,fxAnalyser,mainAnalyser].forEach(a=>{a.fftSize=1024;a.smoothingTimeConstant=.75});
+ gateControl=ctx.createGain();gateControl.gain.value=1;gateWet=ctx.createGain();gateDry=ctx.createGain();gateDry.gain.value=0;eq=[0,1,2,3].map(()=>{const f=ctx.createBiquadFilter();f.type="peaking";return f});eqWet=ctx.createGain();eqDry=ctx.createGain();eqDry.gain.value=0;eqSum=ctx.createGain();comp=ctx.createDynamicsCompressor();compWet=ctx.createGain();compDry=ctx.createGain();compDry.gain.value=0;makeupGain=ctx.createGain();faderGain=ctx.createGain();preTapGain=ctx.createGain();preTapGain.gain.value=0;postTapGain=ctx.createGain();sendGain=ctx.createGain();busGain=ctx.createGain();convolver=ctx.createConvolver();returnGain=ctx.createGain();fxEnable=ctx.createGain();mainMix=ctx.createGain();processedGain=ctx.createGain();rawGain=ctx.createGain();master=ctx.createGain();processedGain.gain.value=1;rawGain.gain.value=0;master.gain.value=.65;
+ inputAnalyser.connect(gateControl);gateControl.connect(gateWet);gateWet.connect(gateAnalyser);inputAnalyser.connect(gateDry);gateDry.connect(gateAnalyser);
+ gateAnalyser.connect(eq[0]);eq[0].connect(eq[1]);eq[1].connect(eq[2]);eq[2].connect(eq[3]);eq[3].connect(eqWet);eqWet.connect(eqSum);gateAnalyser.connect(eqDry);eqDry.connect(eqSum);
+ eqSum.connect(comp);comp.connect(compWet);compWet.connect(compAnalyser);eqSum.connect(compDry);compDry.connect(compAnalyser);compAnalyser.connect(makeupGain);makeupGain.connect(faderGain);faderGain.connect(dryAnalyser);dryAnalyser.connect(mainMix);
+ makeupGain.connect(preTapGain);preTapGain.connect(sendGain);faderGain.connect(postTapGain);postTapGain.connect(sendGain);sendGain.connect(busGain);busGain.connect(convolver);convolver.connect(returnGain);returnGain.connect(fxEnable);fxEnable.connect(fxAnalyser);fxAnalyser.connect(mainMix);
+ mainMix.connect(mainAnalyser);mainAnalyser.connect(processedGain);processedGain.connect(master);rawGain.connect(master);master.connect(ctx.destination);updateAll();startMeters();return ctx;
 }
-function connectSource(node){
- ensureCtx();
- if(sourceNode===node)return;
- if(sourceNode){try{sourceNode.disconnect()}catch(e){}}
- sourceNode=node;
- sourceNode.connect(inputAnalyser);
- sourceNode.connect(rawGain);
- sourceKind=node===micNode?"mic":"file";
- updateMonitor();
-}
-function useFile(file){
- ensureCtx();
- if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;micNode=null}
- if(!mediaSourceNode)mediaSourceNode=ctx.createMediaElementSource(player);
- const url=URL.createObjectURL(file);
- if(player.dataset.url)URL.revokeObjectURL(player.dataset.url);
- player.dataset.url=url;player.src=url;player.loop=true;
- connectSource(mediaSourceNode);
- setText("fileName",file.name);
- $("playBtn").disabled=false;$("pauseBtn").disabled=false;
-}
-async function useMic(){
- ensureCtx();
- try{
-  await ctx.resume();
-  if(micStream)micStream.getTracks().forEach(t=>t.stop());
-  micStream=await navigator.mediaDevices.getUserMedia({audio:true});
-  micNode=ctx.createMediaStreamSource(micStream);
-  connectSource(micNode);
-  player.pause();$("playBtn").disabled=true;$("pauseBtn").disabled=true;
-  setText("fileName","마이크 입력 사용 중");
-  $("micBtn").classList.add("active");
- }catch(e){alert("마이크 권한을 사용할 수 없습니다. 브라우저 권한과 HTTPS 상태를 확인하세요.");}
-}
-function rebuildTap(){
- if(!ctx)return;
- try{faderGain.disconnect(sendGain)}catch(e){}
- try{makeupGain.disconnect(sendGain)}catch(e){}
- if(postTap)faderGain.connect(sendGain);else makeupGain.connect(sendGain);
- $("tapBtn").textContent="FX Tap: "+(postTap?"POST-FADER":"PRE-FADER");
- $("tapExplain").innerHTML=postTap?"<b>POST-FADER:</b> Channel Fader를 내리면 Dry와 FX Send가 함께 감소합니다. 일반적인 Reverb/Delay Send의 기본적인 사고방식입니다.":"<b>PRE-FADER:</b> Channel Fader와 무관하게 FX Send가 유지됩니다. 모니터에는 유용하지만 일반 FX에서는 잔향만 남는 상황을 직접 확인해보세요.";
-}
-function updateMonitor(){
- if(!ctx)return;
- processedGain.gain.setTargetAtTime(monitorProcessed?1:0,ctx.currentTime,.01);
- rawGain.gain.setTargetAtTime(monitorProcessed?0:1,ctx.currentTime,.01);
- $("bypassBtn").textContent="Monitor: "+(monitorProcessed?"PROCESSED":"ORIGINAL");
- $("bypassBtn").classList.toggle("active",!monitorProcessed);
-}
-function makeImpulse(decay,preset){
- const rate=ctx.sampleRate,len=Math.max(1,Math.floor(rate*decay)),buf=ctx.createBuffer(2,len,rate);
- let shape=preset==="plate"?1.7:preset==="room"?3.4:2.2;
- for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++){const t=i/len;d[i]=(Math.random()*2-1)*Math.pow(1-t,shape)*(preset==="plate"?.85:1)}}
- convolver.buffer=buf;
-}
-function ensureImpulse(){
- if(!ctx)return;
- const key=$("verbPreset").value+":"+$("decay").value;
- if(key===impulseKey)return;impulseKey=key;makeImpulse(+$("decay").value,$("verbPreset").value);
-}
-function updateEq(){
- if(!ctx)return;
- [1,2,3,4].forEach((n,i)=>{
-  const f=+$("eq"+n+"f").value,g=+$("eq"+n+"g").value,q=+$("eq"+n+"q").value;
-  eq[i].frequency.setTargetAtTime(f,ctx.currentTime,.01);eq[i].gain.setTargetAtTime(g,ctx.currentTime,.01);eq[i].Q.setTargetAtTime(q,ctx.currentTime,.01);
-  setText("eq"+n+"fV",Math.round(f)+" Hz");setText("eq"+n+"gV",fmtDb(g));setText("eq"+n+"qV",q.toFixed(1));
- });
-}
-function updateComp(){
- if(!ctx)return;
- const th=+$("compTh").value,ra=+$("compRatio").value,at=+$("compAttack").value/1000,re=+$("compRelease").value/1000,kn=+$("compKnee").value,mu=+$("makeup").value;
- comp.threshold.setTargetAtTime(th,ctx.currentTime,.01);comp.ratio.setTargetAtTime(ra,ctx.currentTime,.01);comp.attack.setTargetAtTime(at,ctx.currentTime,.01);comp.release.setTargetAtTime(re,ctx.currentTime,.01);comp.knee.setTargetAtTime(kn,ctx.currentTime,.01);makeupGain.gain.setTargetAtTime(dbToGain(mu),ctx.currentTime,.01);
- setText("compThV",fmtDb(th));setText("compRatioV",ra.toFixed(1)+":1");setText("compAttackV",Math.round(at*1000)+" ms");setText("compReleaseV",Math.round(re*1000)+" ms");setText("compKneeV",kn.toFixed(0)+" dB");setText("makeupV",fmtDb(mu));
-}
-function updateLevels(){
- if(!ctx)return;
- const f=+$("fader").value,s=+$("send").value,b=+$("bus").value,r=+$("ret").value;
- faderGain.gain.setTargetAtTime(dbToGain(f),ctx.currentTime,.01);sendGain.gain.setTargetAtTime(dbToGain(s),ctx.currentTime,.01);busGain.gain.setTargetAtTime(dbToGain(b),ctx.currentTime,.01);returnGain.gain.setTargetAtTime(dbToGain(r),ctx.currentTime,.01);
- setText("faderV",fmtDb(f));setText("sendV",fmtDb(s));setText("busV",fmtDb(b));setText("retV",fmtDb(r));
-}
-function updateGateLabels(){
- setText("gateThV",fmtDb($("gateTh").value));setText("gateRangeV",fmtDb($("gateRange").value));setText("gateAttackV",$("gateAttack").value+" ms");setText("gateReleaseV",$("gateRelease").value+" ms");
-}
+function connectSource(node){ensureCtx();if(sourceNode===node)return;if(sourceNode)try{sourceNode.disconnect()}catch{}sourceNode=node;node.connect(inputAnalyser);node.connect(rawGain);updateMonitor()}
+function useFile(file){ensureCtx();if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;micNode=null}$("micBtn").classList.remove("active");if(!mediaSourceNode)mediaSourceNode=ctx.createMediaElementSource(player);const url=URL.createObjectURL(file);if(player.dataset.url)URL.revokeObjectURL(player.dataset.url);player.dataset.url=url;player.src=url;player.loop=true;connectSource(mediaSourceNode);setText("fileName",file.name);$("playBtn").disabled=false;$("pauseBtn").disabled=false}
+async function useMic(){try{ensureCtx();await ctx.resume();if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=await navigator.mediaDevices.getUserMedia({audio:true});micNode=ctx.createMediaStreamSource(micStream);connectSource(micNode);player.pause();$("playBtn").disabled=true;$("pauseBtn").disabled=true;setText("fileName","마이크 입력 사용 중");$("micBtn").classList.add("active")}catch(e){setText("fileName","마이크 초기화 실패: "+e.message);alert("마이크 권한을 사용할 수 없습니다. 브라우저 권한과 HTTPS 상태를 확인하세요.")}}
+function updateTap(){if(ctx){setParam(postTapGain.gain,postTap?1:0);setParam(preTapGain.gain,postTap?0:1)}$("tapBtn").textContent="FX Tap: "+(postTap?"POST-FADER":"PRE-FADER");$("tapExplain").innerHTML=postTap?"<b>POST-FADER:</b> Channel Fader를 내리면 Dry와 FX Send가 함께 감소합니다.":"<b>PRE-FADER:</b> Channel Fader와 무관하게 FX Send가 유지되어 잔향만 남을 수 있습니다."}
+function updateMonitor(){if(ctx){setParam(processedGain.gain,monitorProcessed?1:0,.01);setParam(rawGain.gain,monitorProcessed?0:1,.01)}$("bypassBtn").textContent="Monitor: "+(monitorProcessed?"PROCESSED":"ORIGINAL");$("bypassBtn").classList.toggle("active",!monitorProcessed)}
+function makeImpulse(decay,preset){const rate=ctx.sampleRate,len=Math.max(1,Math.floor(rate*decay)),buf=ctx.createBuffer(2,len,rate),shape=preset==="plate"?1.7:preset==="room"?3.4:2.2;for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,shape)*(preset==="plate"?.85:1)}convolver.buffer=buf}
+function ensureImpulse(){if(!ctx)return;const key=$("verbPreset").value+":"+$("decay").value;if(key===impulseKey)return;impulseKey=key;makeImpulse(+$("decay").value,$("verbPreset").value)}
+function updateEq(){[1,2,3,4].forEach((n,i)=>{const f=+$("eq"+n+"f").value,g=+$("eq"+n+"g").value,q=+$("eq"+n+"q").value;if(ctx){eq[i].frequency.setTargetAtTime(f,ctx.currentTime,.01);eq[i].gain.setTargetAtTime(g,ctx.currentTime,.01);eq[i].Q.setTargetAtTime(q,ctx.currentTime,.01)}setText("eq"+n+"fV",Math.round(f)+" Hz");setText("eq"+n+"gV",fmtDb(g));setText("eq"+n+"qV",q.toFixed(1))})}
+function updateComp(){const th=+$("compTh").value,ra=+$("compRatio").value,at=+$("compAttack").value/1000,re=+$("compRelease").value/1000,kn=+$("compKnee").value,mu=+$("makeup").value;if(ctx){comp.threshold.setTargetAtTime(th,ctx.currentTime,.01);comp.ratio.setTargetAtTime(ra,ctx.currentTime,.01);comp.attack.setTargetAtTime(at,ctx.currentTime,.01);comp.release.setTargetAtTime(re,ctx.currentTime,.01);comp.knee.setTargetAtTime(kn,ctx.currentTime,.01);setParam(makeupGain.gain,processorState.comp?dbToGain(mu):1)}setText("compThV",fmtDb(th));setText("compRatioV",ra.toFixed(1)+":1");setText("compAttackV",at*1000+" ms");setText("compReleaseV",re*1000+" ms");setText("compKneeV",kn+" dB");setText("makeupV",fmtDb(mu))}
+function updateLevels(){const f=+$("fader").value,s=+$("send").value,b=+$("bus").value,r=+$("ret").value,sendTotal=(postTap?f:0)+s+b;if(ctx){setParam(faderGain.gain,dbToGain(f));setParam(sendGain.gain,dbToGain(s));setParam(busGain.gain,dbToGain(b));setParam(returnGain.gain,dbToGain(r))}setText("faderV",fmtDb(f));setText("sendV",fmtDb(s));setText("busV",fmtDb(b));setText("retV",fmtDb(r));setText("fxDryCalc",fmtDb(f));setText("fxSendCalc",fmtDb(sendTotal));setText("fxWetCalc",fmtDb(sendTotal+r))}
+function updateGateLabels(){setText("gateThV",fmtDb($("gateTh").value));setText("gateRangeV",fmtDb($("gateRange").value));setText("gateAttackV",$("gateAttack").value+" ms");setText("gateReleaseV",$("gateRelease").value+" ms")}
 function updateVerb(){setText("decayV",Number($("decay").value).toFixed(1)+" s");ensureImpulse()}
-function updateAll(){updateEq();updateComp();updateLevels();updateGateLabels();updateVerb();rebuildTap();updateMonitor()}
-function rmsDb(analyser){
- const a=new Float32Array(analyser.fftSize);analyser.getFloatTimeDomainData(a);let sum=0;for(const v of a)sum+=v*v;const rms=Math.sqrt(sum/a.length);return rms>0?20*Math.log10(rms):-100;
-}
+function updateAll(){updateEq();updateComp();updateLevels();updateGateLabels();updateVerb();updateTap();updateMonitor();applyProcessorState()}
+function rmsDb(a){const data=new Float32Array(a.fftSize);a.getFloatTimeDomainData(data);let sum=0;for(const v of data)sum+=v*v;const rms=Math.sqrt(sum/data.length);return rms>0?20*Math.log10(rms):-100}
 function meter(id,db){$(id).style.width=Math.max(0,Math.min(100,(db+60)/60*100))+"%"}
-function startMeters(){
- const tick=()=>{
-  if(!ctx){raf=requestAnimationFrame(tick);return}
-  const inDb=rmsDb(inputAnalyser),th=+$("gateTh").value,range=+$("gateRange").value;
-  const target=inDb>=th?1:dbToGain(range);
-  const tc=(target>gateGain.gain.value?+$("gateAttack").value:+$("gateRelease").value)/1000;
-  gateGain.gain.setTargetAtTime(target,ctx.currentTime,Math.max(.002,tc/4));
-  meter("mInput",inDb);meter("mGate",rmsDb(gateAnalyser));meter("mComp",rmsDb(compAnalyser));meter("mDry",rmsDb(dryAnalyser));meter("mFx",rmsDb(fxAnalyser));meter("mMain",rmsDb(mainAnalyser));
-  setText("grV",(comp.reduction||0).toFixed(1)+" dB");
-  raf=requestAnimationFrame(tick);
- };tick();
-}
-$("fileInput").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0];if(f)try{useFile(f)}catch(error){setText("fileName","오디오 초기화 실패: "+error.message);alert("오디오 그래프를 초기화할 수 없습니다: "+error.message)}});
-$("micBtn").onclick=useMic;
-$("playBtn").onclick=async()=>{try{ensureCtx();await ctx.resume();await player.play()}catch(e){setText("fileName","오디오 재생 실패: "+e.message);alert("오디오를 재생할 수 없습니다: "+e.message)}};
-$("pauseBtn").onclick=()=>player.pause();
-$("loopBtn").onclick=()=>{player.loop=!player.loop;$("loopBtn").textContent="Loop: "+(player.loop?"ON":"OFF")};
-$("bypassBtn").onclick=()=>{monitorProcessed=!monitorProcessed;updateMonitor()};
-$("tapBtn").onclick=()=>{postTap=!postTap;rebuildTap()};
-["gateTh","gateRange","gateAttack","gateRelease"].forEach(id=>$(id).oninput=updateGateLabels);
-["compTh","compRatio","compAttack","compRelease","compKnee","makeup"].forEach(id=>$(id).oninput=()=>{ensureCtx();updateComp()});
-[1,2,3,4].forEach(n=>["f","g","q"].forEach(s=>$("eq"+n+s).oninput=()=>{ensureCtx();updateEq()}));
-["fader","send","bus","ret"].forEach(id=>$(id).oninput=()=>{ensureCtx();updateLevels()});
-$("decay").oninput=()=>{ensureCtx();impulseKey="";updateVerb()};$("verbPreset").onchange=()=>{ensureCtx();impulseKey="";updateVerb()};
-function preset(vals){Object.entries(vals).forEach(([id,v])=>$(id).value=v);ensureCtx();updateEq()}
-$("eqFlat").onclick=()=>preset({eq1g:0,eq2g:0,eq3g:0,eq4g:0});
-$("vocalPreset").onclick=()=>preset({eq1f:120,eq1g:-2,eq1q:.8,eq2f:300,eq2g:-3,eq2q:1.4,eq3f:3000,eq3g:2,eq3q:1.1,eq4f:9000,eq4g:1.5,eq4q:.8});
-$("mudPreset").onclick=()=>preset({eq2f:320,eq2g:-5,eq2q:1.8});
-$("presencePreset").onclick=()=>preset({eq3f:3200,eq3g:3,eq3q:1.2});
-player.loop=true;updateGateLabels();
-[1,2,3,4].forEach(n=>{setText("eq"+n+"fV",$("eq"+n+"f").value+" Hz");setText("eq"+n+"gV",fmtDb($("eq"+n+"g").value));setText("eq"+n+"qV",Number($("eq"+n+"q").value).toFixed(1))});
-["compTh","makeup"].forEach(id=>{});setText("compThV",fmtDb($("compTh").value));setText("compRatioV",Number($("compRatio").value).toFixed(1)+":1");setText("compAttackV",$("compAttack").value+" ms");setText("compReleaseV",$("compRelease").value+" ms");setText("compKneeV",$("compKnee").value+" dB");setText("makeupV",fmtDb($("makeup").value));setText("faderV",fmtDb($("fader").value));setText("sendV",fmtDb($("send").value));setText("busV",fmtDb($("bus").value));setText("retV",fmtDb($("ret").value));setText("decayV",Number($("decay").value).toFixed(1)+" s");
+function startMeters(){const tick=()=>{if(!ctx){raf=requestAnimationFrame(tick);return}const inDb=rmsDb(inputAnalyser),th=+$("gateTh").value,range=+$("gateRange").value,target=inDb>=th?1:dbToGain(range),tc=(target>gateControl.gain.value?+$("gateAttack").value:+$("gateRelease").value)/1000;gateControl.gain.setTargetAtTime(target,ctx.currentTime,Math.max(.002,tc/4));meter("mInput",inDb);meter("mGate",rmsDb(gateAnalyser));meter("mComp",rmsDb(compAnalyser));meter("mDry",rmsDb(dryAnalyser));meter("mFx",rmsDb(fxAnalyser));meter("mMain",rmsDb(mainAnalyser));setText("grV",processorState.comp?(comp.reduction||0).toFixed(1)+" dB":"BYPASS");raf=requestAnimationFrame(tick)};tick()}
+document.querySelectorAll("[data-processor-toggle]").forEach(b=>b.addEventListener("click",()=>toggleProcessor(b.dataset.processorToggle)));
+$("fileInput").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0];if(f)try{useFile(f)}catch(error){setText("fileName","오디오 초기화 실패: "+error.message);alert("오디오 그래프를 초기화할 수 없습니다: "+error.message)}});$("micBtn").onclick=useMic;
+$("playBtn").onclick=async()=>{try{ensureCtx();await ctx.resume();await player.play()}catch(e){setText("fileName","오디오 재생 실패: "+e.message);alert("오디오를 재생할 수 없습니다: "+e.message)}};$("pauseBtn").onclick=()=>player.pause();$("loopBtn").onclick=()=>{player.loop=!player.loop;$("loopBtn").textContent="Loop: "+(player.loop?"ON":"OFF")};$("bypassBtn").onclick=()=>{monitorProcessed=!monitorProcessed;updateMonitor()};$("tapBtn").onclick=()=>{postTap=!postTap;updateTap();updateLevels()};
+["gateTh","gateRange","gateAttack","gateRelease"].forEach(id=>$(id).oninput=updateGateLabels);["compTh","compRatio","compAttack","compRelease","compKnee","makeup"].forEach(id=>$(id).oninput=updateComp);[1,2,3,4].forEach(n=>["f","g","q"].forEach(s=>$("eq"+n+s).oninput=updateEq));["fader","send","bus","ret"].forEach(id=>$(id).oninput=updateLevels);$("decay").oninput=()=>{impulseKey="";updateVerb()};$("verbPreset").onchange=()=>{impulseKey="";updateVerb()};
+function preset(vals){Object.entries(vals).forEach(([id,v])=>$(id).value=v);updateEq()}$("eqFlat").onclick=()=>preset({eq1g:0,eq2g:0,eq3g:0,eq4g:0});$("vocalPreset").onclick=()=>preset({eq1f:120,eq1g:-2,eq1q:.8,eq2f:300,eq2g:-3,eq2q:1.4,eq3f:3000,eq3g:2,eq3q:1.1,eq4f:9000,eq4g:1.5,eq4q:.8});$("mudPreset").onclick=()=>preset({eq2f:320,eq2g:-5,eq2q:1.8});$("presencePreset").onclick=()=>preset({eq3f:3200,eq3g:3,eq3q:1.2});
+document.querySelectorAll("[data-fx-preset]").forEach(button=>button.onclick=()=>{const name=button.dataset.fxPreset;if(name==="normal"||name==="reset"){$("fader").value=0;$("send").value=-12;$("bus").value=0;$("ret").value=-5;postTap=true;$("fxScenario").innerHTML="<b>연습:</b> Channel Fader를 내려 Dry와 Reverb가 같이 줄어드는지 확인하세요."}else if(name==="prefader"){$("fader").value=0;$("send").value=-12;$("bus").value=0;$("ret").value=-5;postTap=false;$("fxScenario").innerHTML="<b>연습:</b> Fader를 -30 dB까지 내려도 Reverb가 남는 Pre-Fader 특성을 확인하세요."}else if(name==="tooMuch"){$("fader").value=0;$("send").value=-2;$("bus").value=0;$("ret").value=0;postTap=true;$("fxScenario").innerHTML="<b>연습:</b> FX 과다 상태입니다. 한 채널은 Send, 전체 잔향은 Return을 줄여보세요."}updateTap();updateLevels()});
+player.loop=true;updateAll();
 })();

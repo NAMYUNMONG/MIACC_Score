@@ -41,6 +41,8 @@ Source → Gate → EQ → Compressor → Channel Fader → Main
 - Original/Processed 모니터 비교
 - Gate, 4-band EQ, Compressor 실습
 - FX Send/Return 신호 흐름 연습
+- 시그널 라인과 각 모듈에서 Gate, EQ, Compressor, Reverb 독립 ON/OFF
+- Post/Pre-Fader FX 비교와 FX 레벨 계산 및 연습 시나리오
 - 입력 및 출력 레벨 시각화
 
 > Audio Lab은 교육용 근사 시뮬레이션입니다. 실제 M32 DSP 알고리즘을 동일하게 복제한 에뮬레이터는 아닙니다.

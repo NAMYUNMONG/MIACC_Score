@@ -23,6 +23,8 @@ input[type=range]{width:100%}.meter{height:11px;background:#0b0c0d;border:1px so
 .sig{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:14px 0}.box{padding:7px 9px;border:1px solid var(--edge);border-radius:8px;background:var(--panel2)}.gold{border-color:#6d5b25;color:var(--gold2)}
 .note{background:#202329;border-left:3px solid var(--gold);padding:12px 14px;border-radius:8px;margin:14px 0}.danger{border-left-color:var(--red)}
 .eqgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.eqband{border:1px solid var(--edge);border-radius:10px;padding:10px;background:#15171a}.eqband h4{margin:0 0 8px;color:var(--gold2)}
+.module-title{display:flex;align-items:center;justify-content:space-between;gap:12px}.module-title h3{margin:0}.power-toggle{min-width:74px;font-size:12px;font-weight:850}.power-toggle[aria-pressed="false"]{border-color:var(--edge);background:var(--bg);color:var(--muted)}.module.is-bypassed{opacity:.72}.module.is-bypassed .row,.module.is-bypassed .eqgrid{filter:saturate(.35)}
+.signal-toggle{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:9px}.signal-toggle small{font-size:10px}.signal-toggle[aria-pressed="false"]{border-color:var(--edge);background:var(--panel2);color:var(--muted);text-decoration:line-through}.signal-branch{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.processor-help{margin:8px 0 0;color:var(--muted);font-size:12px}
 footer{margin-top:38px;padding:20px 0;color:var(--muted);border-top:1px solid var(--edge);font-size:13px}
 .themebar{display:flex;justify-content:space-between;align-items:center;gap:12px}.theme-toggle{min-width:44px;min-height:44px;border-radius:12px;font-weight:800}[data-theme="light"] .module,[data-theme="light"] .note,[data-theme="light"] .box,[data-theme="light"] .eqband,[data-theme="light"] .meterBox{background:var(--panel2)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
@@ -60,7 +62,8 @@ footer{margin-top:38px;padding:20px 0;color:var(--muted);border-top:1px solid va
 
 <audio id="player" crossorigin="anonymous"></audio>
 
-<div class="sig"><span class="box">SOURCE</span>→<span class="box gold">GATE</span>→<span class="box gold">4-BAND EQ</span>→<span class="box gold">COMP</span>→<span class="box">CHANNEL FADER</span>→<span class="box">MAIN</span><span>＋</span><span class="box gold">FX SEND</span>→<span class="box gold">REVERB</span>→<span class="box">FX RETURN</span></div>
+<div class="sig" aria-label="통합 오디오 시그널 라인"><span class="box">SOURCE</span>→<button class="signal-toggle" type="button" data-processor-toggle="gate"><b>GATE</b><small>ON</small></button>→<button class="signal-toggle" type="button" data-processor-toggle="eq"><b>4-BAND EQ</b><small>ON</small></button>→<button class="signal-toggle" type="button" data-processor-toggle="comp"><b>COMP</b><small>ON</small></button>→<span class="box">CHANNEL FADER</span>→<span class="box">MAIN</span><span>＋</span><span class="signal-branch"><span class="box gold">FX SEND</span>→<button class="signal-toggle" type="button" data-processor-toggle="fx"><b>REVERB</b><small>ON</small></button>→<span class="box">FX RETURN</span></span></div>
+<p class="processor-help">시그널 라인의 Gate, EQ, Comp, Reverb 버튼을 눌러 원하는 프로세서만 독립적으로 bypass할 수 있습니다.</p>
 
 <div class="meters">
 <div class="meterBox"><b>INPUT</b><div class="meter"><i id="mInput"></i></div></div>
@@ -72,16 +75,16 @@ footer{margin-top:38px;padding:20px 0;color:var(--muted);border-top:1px solid va
 </div>
 
 <div class="cols" style="margin-top:14px">
-<div class="module">
-<h3>Gate</h3>
+<div class="module" id="moduleGate">
+<div class="module-title"><h3>Gate</h3><button class="power-toggle" type="button" data-processor-toggle="gate">Gate ON</button></div>
 <div class="row"><label>Threshold</label><input id="gateTh" type="range" min="-80" max="0" value="-80"><output id="gateThV"></output></div>
 <div class="row"><label>Range</label><input id="gateRange" type="range" min="-80" max="0" value="-35"><output id="gateRangeV"></output></div>
 <div class="row"><label>Attack</label><input id="gateAttack" type="range" min="1" max="200" value="12"><output id="gateAttackV"></output></div>
 <div class="row"><label>Release</label><input id="gateRelease" type="range" min="20" max="1500" value="250"><output id="gateReleaseV"></output></div>
 </div>
 
-<div class="module">
-<h3>Compressor</h3>
+<div class="module" id="moduleComp">
+<div class="module-title"><h3>Compressor</h3><button class="power-toggle" type="button" data-processor-toggle="comp">Comp ON</button></div>
 <div class="row"><label>Threshold</label><input id="compTh" type="range" min="-60" max="0" value="-18"><output id="compThV"></output></div>
 <div class="row"><label>Ratio</label><input id="compRatio" type="range" min="1" max="20" step=".5" value="3"><output id="compRatioV"></output></div>
 <div class="row"><label>Attack</label><input id="compAttack" type="range" min="1" max="100" value="15"><output id="compAttackV"></output></div>
@@ -92,8 +95,8 @@ footer{margin-top:38px;padding:20px 0;color:var(--muted);border-top:1px solid va
 </div>
 </div>
 
-<div class="module" style="margin-top:14px">
-<h3>4-Band Parametric EQ</h3>
+<div class="module" id="moduleEq" style="margin-top:14px">
+<div class="module-title"><h3>4-Band Parametric EQ</h3><button class="power-toggle" type="button" data-processor-toggle="eq">EQ ON</button></div>
 <div class="eqgrid">
 <div class="eqband"><h4>LOW</h4><div class="row"><label>Freq</label><input id="eq1f" type="range" min="40" max="500" value="120"><output id="eq1fV"></output></div><div class="row"><label>Gain</label><input id="eq1g" type="range" min="-15" max="15" step=".5" value="0"><output id="eq1gV"></output></div><div class="row"><label>Q</label><input id="eq1q" type="range" min=".3" max="8" step=".1" value="1"><output id="eq1qV"></output></div></div>
 <div class="eqband"><h4>LOW MID</h4><div class="row"><label>Freq</label><input id="eq2f" type="range" min="100" max="2000" value="350"><output id="eq2fV"></output></div><div class="row"><label>Gain</label><input id="eq2g" type="range" min="-15" max="15" step=".5" value="0"><output id="eq2gV"></output></div><div class="row"><label>Q</label><input id="eq2q" type="range" min=".3" max="8" step=".1" value="1.4"><output id="eq2qV"></output></div></div>
@@ -111,13 +114,16 @@ footer{margin-top:38px;padding:20px 0;color:var(--muted);border-top:1px solid va
 <div class="row"><label>FX Bus Master</label><input id="bus" type="range" min="-60" max="10" step=".5" value="0"><output id="busV"></output></div>
 <button id="tapBtn">FX Tap: POST-FADER</button>
 <div id="tapExplain" class="note"></div>
+<div class="meters"><div class="meterBox"><b>DRY 이론값</b><span id="fxDryCalc">0.0 dB</span></div><div class="meterBox"><b>FX INPUT 이론값</b><span id="fxSendCalc">-12.0 dB</span></div><div class="meterBox"><b>WET RETURN 이론값</b><span id="fxWetCalc">-17.0 dB</span></div></div>
 </div>
 
-<div class="module">
-<h3>Reverb / Return</h3>
+<div class="module" id="moduleFx">
+<div class="module-title"><h3>Reverb / Return</h3><button class="power-toggle" type="button" data-processor-toggle="fx">Reverb ON</button></div>
 <div class="row"><label>Preset</label><select id="verbPreset"><option value="hall">Hall</option><option value="plate">Plate</option><option value="room">Room</option></select><span></span></div>
 <div class="row"><label>Decay</label><input id="decay" type="range" min=".3" max="6" step=".1" value="2.4"><output id="decayV"></output></div>
 <div class="row"><label>FX Return</label><input id="ret" type="range" min="-60" max="10" step=".5" value="-5"><output id="retV"></output></div>
+<div class="toolbar"><button type="button" data-fx-preset="normal">Vocal Reverb 기본</button><button type="button" data-fx-preset="prefader">Pre-Fader 비교</button><button type="button" data-fx-preset="tooMuch">FX 과다</button><button type="button" data-fx-preset="reset">Reset</button></div>
+<div class="note" id="fxScenario"><b>연습:</b> Channel Fader를 내리며 Dry와 Reverb가 함께 줄어드는지 확인하세요.</div>
 <div class="note">FX Send → Bus Master → Reverb → FX Return 순서로 레벨을 움직이며 어느 지점이 전체 Wet 양에 영향을 주는지 비교하세요.</div>
 </div>
 </div>
