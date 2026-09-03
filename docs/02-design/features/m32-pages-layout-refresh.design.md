@@ -25,7 +25,7 @@
 화면 상태:
 
 - Dark / Light
-- Available / Latest / Legacy / Restore Required
+- Available / Latest
 - Interactive Lab collapsed / expanded
 - Navigation normal / sticky / mobile scroll
 - Theme preference: system / stored dark / stored light
@@ -117,7 +117,7 @@ Hub
   ├─ Primary CTA ──────────────> M32 Audio Lab
   ├─ Quick Access ─────────────> FX Guide V2 / Routing V2
   ├─ Resource filter ──────────> filtered cards
-  ├─ Restore Required card ────> status explanation only, no link
+  ├─ Resource card ────────────> verified local asset only
   ├─ Interactive summary ──────> expand selected Lab
   └─ Theme toggle ─────────────> update data-theme + save preference
 ```
@@ -234,7 +234,7 @@ docs/02-design/mockup.md                 # compact review wireframe
 | localStorage unavailable | 시스템 설정 또는 Dark fallback, 페이지 정상 사용 |
 | Keyboard navigation | header, filters, cards, Lab, toggle 모두 접근 가능 |
 | 360/768/1024/1440 viewport | 가로 overflow 없음, 정의된 column 적용 |
-| Restore Required cards | 내부 href 없음 |
+| Resource cards | 모든 내부 href의 실제 배포 파일 존재 |
 | `npm run build` | exit code 0 |
 | M32 link checker | missing link 0 |
 | Local/Pages HTTP | Hub와 정상 자료 200 |

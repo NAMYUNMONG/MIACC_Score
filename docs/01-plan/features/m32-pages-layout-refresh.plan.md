@@ -24,7 +24,7 @@
 - M32 Audio Lab 및 2개의 인라인 Interactive Lab
 - Manuals & Guides
 - Scene Files
-- References와 복원 필요 상태
+- References와 자료 상태
 
 콘텐츠 종류와 상태는 명확하지만, 페이지 길이가 길고 Interactive Lab의 상세 UI가 자료 목록보다 먼저 크게 노출되어 사용 목적별 탐색이 어렵다. 모바일에서는 카드와 복잡한 실습 제어 영역을 연속해서 스크롤해야 한다.
 
@@ -45,7 +45,7 @@
 - [ ] 현재 검정/금색 Dark 테마를 기본 시각 정체성으로 유지하고 Light 모드 추가
 - [ ] OS 테마 감지, 사용자 전환, 선택값 저장을 지원
 - [ ] Manuals, Scenes, Labs, References로 바로 이동하는 반응형 상단 탐색 제공
-- [ ] 자료 카드의 최신·legacy·복원 필요 상태를 일관된 시각 언어로 정리
+- [ ] 자료 카드의 최신·제공 상태를 일관된 시각 언어로 정리
 - [ ] Interactive Lab을 기본 접힘 또는 별도 진입 구조로 변경해 Hub의 정보 밀도 완화
 - [ ] 데스크톱 2~3열, 태블릿 2열, 모바일 1열의 명확한 카드 그리드 정의
 - [ ] 모바일 터치 영역, 글자 크기, 여백, 긴 파일명 처리 개선
@@ -72,8 +72,8 @@
 |----|-------------|----------|--------|
 | FR-01 | 첫 화면에서 Hub 목적, 최신 Audio Lab, 핵심 자료 진입점을 확인할 수 있어야 한다. | High | Pending |
 | FR-02 | 사용자는 1회 클릭으로 Manuals, Scenes, Labs, References 섹션에 이동할 수 있어야 한다. | High | Pending |
-| FR-03 | 카드마다 Available, Latest, Legacy, Restore Required 상태가 일관되게 표시되어야 한다. | High | Pending |
-| FR-04 | 복원 필요 자료에는 다운로드 링크가 생성되지 않아야 한다. | High | Pending |
+| FR-03 | 카드마다 Available, Latest 상태가 일관되게 표시되어야 한다. | High | Pending |
+| FR-04 | 검증된 배포 자료만 다운로드 링크로 제공되어야 한다. | High | Pending |
 | FR-05 | M32 Audio Lab, FX Lab, Channel Lab을 구분해 진입할 수 있어야 한다. | High | Pending |
 | FR-06 | 인라인 Lab은 접기/펼치기 또는 명확한 탭으로 콘텐츠 목록을 방해하지 않아야 한다. | Medium | Pending |
 | FR-07 | 모든 내부 링크는 `/MIACC_Score/m32/`에서 정상 동작해야 한다. | High | Pending |
@@ -110,7 +110,7 @@
    - Latest 항목 3개: Audio Lab, FX Guide V2, User Routing V2
 4. **Resource Library**
    - Manuals / Scenes / References를 상태별 카드로 표시
-   - 복원 필요 항목은 disabled card로 유지
+   - 검증된 자료만 카드와 링크로 제공
 5. **Interactive Practice**
    - FX와 Channel Lab은 기본 요약 상태
    - 사용자가 선택할 때만 상세 controls 표시
@@ -127,8 +127,8 @@
 - [ ] 기존 검정/금색 MIDAS 시각 언어 유지
 - [ ] Dark/Light 테마 모두 설계 token과 대비 기준 충족
 - [ ] 최초 OS 설정 및 저장된 사용자 테마 선택이 올바르게 적용
-- [ ] 기존 정상 자료 3개, Scene 1개, Audio Lab 및 JS 보존
-- [ ] 복원 필요 5개 항목에 깨진 링크 없음
+- [ ] 검증된 Guide 5개, Scene 1개, Audio Lab 및 JS 보존
+- [ ] 제공되는 모든 자료 링크의 실제 파일 존재
 - [ ] 360px부터 1440px까지 주요 breakpoint 검증
 - [ ] 키보드만으로 navigation, filters, Lab tabs 사용 가능
 - [ ] `npm ci` 및 `npm run build` 성공
@@ -156,7 +156,7 @@
 | 레이아웃 변경 중 Audio Lab inline script 또는 기존 JS 손상 | High | Medium | UI와 DSP 변경 범위를 분리하고 JS syntax 및 source graph 검사 |
 | 모바일에서 Lab controls가 지나치게 길어짐 | Medium | High | 기본 접힘, progressive disclosure, 1열 control layout 적용 |
 | 통계 숫자와 실제 배포 파일 불일치 | Medium | Medium | 검증된 파일 manifest 또는 build-time 계산 방식 검토 |
-| 복원 필요 자료에 실수로 링크 재노출 | High | Low | link checker와 금지 href 검사 유지 |
+| 검증되지 않은 자료가 링크로 노출됨 | High | Low | 배포 전 자산 복원 및 link checker 검사 유지 |
 | 과도한 시각 변경으로 기존 MIDAS 정체성 약화 | Medium | Medium | 색상 token과 검정/금색 기조 고정, 구조·간격 중심 개선 |
 | Light 모드에서 금색 accent와 본문 대비가 부족함 | High | Medium | Light 전용 gold-dark token과 WCAG 대비 검사 적용 |
 | 초기 렌더링에서 잘못된 테마가 잠깐 표시됨 | Medium | Medium | `<head>`의 작은 초기화 script로 저장값/OS 설정을 CSS 전에 적용 |
