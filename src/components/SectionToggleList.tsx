@@ -17,6 +17,11 @@ export function SectionToggleList({
   onRemoveSection,
   onRequestChange,
 }: SectionToggleListProps) {
+  const instrumentalIds: SectionId[] = ["intro", "interlude", "outro"];
+  const sectionGroups = [
+    { label: "Intro, Interlude, Outro 추가", sections: sections.filter((section) => instrumentalIds.includes(section.id)) },
+    { label: "나머지 섹션 추가", sections: sections.filter((section) => !instrumentalIds.includes(section.id)) },
+  ];
   const getSectionLabel = (sectionId: SectionId) =>
     sections.find((section) => section.id === sectionId)?.label ?? sectionId;
 
@@ -39,16 +44,20 @@ export function SectionToggleList({
     <section className="control-section compact-section-control" aria-labelledby="sections-title">
       <h2 id="sections-title">섹션 구성</h2>
 
-      <div className="add-section-grid" aria-label="섹션 추가">
-        {sections.map((section) => (
-          <button
-            type="button"
-            className="toggle-button"
-            key={section.id}
-            onClick={() => onAddSection(section.id)}
-          >
-            {section.label}
-          </button>
+      <div className="section-choice-groups">
+        {sectionGroups.map((group) => (
+          <div className="add-section-grid" role="group" aria-label={group.label} key={group.label}>
+            {group.sections.map((section) => (
+              <button
+                type="button"
+                className="toggle-button"
+                key={section.id}
+                onClick={() => onAddSection(section.id)}
+              >
+                {section.label}
+              </button>
+            ))}
+          </div>
         ))}
       </div>
 

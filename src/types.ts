@@ -1,9 +1,11 @@
 export type SectionId =
   | "intro"
   | "verse"
+  | "pre-chorus"
   | "chorus"
   | "bridge"
   | "interlude"
+  | "tag"
   | "outro"
   | "other";
 
@@ -32,7 +34,13 @@ export type SongConti = {
   date: string;
   title: string;
   key: string;
+  referenceUrl: string;
   sheetImageUrl: string;
   sheetImageAdjust: SheetImageAdjust;
+  secondSheet: {
+    key: string;
+    imageUrl: string;
+    imageAdjust: SheetImageAdjust;
+  } | null;
   sections: SongSection[];
 };

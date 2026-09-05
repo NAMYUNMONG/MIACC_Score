@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { ArrowLeft } from "lucide-react";
 import { A4Preview } from "./components/A4Preview";
 import { ExportBar } from "./components/ExportBar";
 import { ImageUploader } from "./components/ImageUploader";
@@ -28,8 +29,10 @@ const createSong = (): SongConti => ({
   date: getToday(),
   title: "",
   key: "",
+  referenceUrl: "",
   sheetImageUrl: "",
   sheetImageAdjust: DEFAULT_SHEET_IMAGE_ADJUST,
+  secondSheet: null,
   sections: [],
 });
 
@@ -44,7 +47,7 @@ function App() {
   const hasPreviewContent = useMemo(
     () =>
       songs.some(
-        (song) => song.title || song.key || song.sheetImageUrl || song.sections.length,
+        (song) => song.title || song.key || song.referenceUrl || song.sheetImageUrl || song.secondSheet?.imageUrl || song.sections.length,
       ),
     [songs],
   );
@@ -60,6 +63,11 @@ function App() {
   const selectSong = (songId: string, index: number) => {
     setActiveSongId(songId);
     setPreviewIndex(index);
+  };
+
+  const updateSecondSheet = (patch: Partial<NonNullable<SongConti["secondSheet"]>>) => {
+    if (!activeSong.secondSheet) return;
+    updateActiveSong({ secondSheet: { ...activeSong.secondSheet, ...patch } });
   };
 
   const addSong = () => {
@@ -122,9 +130,23 @@ function App() {
     <main className="app-shell">
       <section className="workspace">
         <div className="editor-panel">
+          <a className="score-home-link" href="./index.html">
+            <ArrowLeft size={18} aria-hidden="true" />
+            메인으로
+          </a>
           <div className="panel-heading">
-            <span className="eyebrow">Score Conti</span>
-            <h1>악보 콘티 작성</h1>
+            <div>
+              <span className="eyebrow">Score Conti</span>
+              <h1>악보 콘티 작성</h1>
+            </div>
+            <label className="field heading-date">
+              <span>날짜</span>
+              <input
+                type="date"
+                value={activeSong.date}
+                onChange={(event) => updateActiveSong({ date: event.target.value })}
+              />
+            </label>
           </div>
 
           <section className="control-section" aria-labelledby="song-list-title">
@@ -160,13 +182,15 @@ function App() {
           </section>
 
           <SongInfoForm
-            date={activeSong.date}
             title={activeSong.title}
             songKey={activeSong.key}
+            referenceUrl={activeSong.referenceUrl}
             onChange={updateActiveSong}
           />
 
           <ImageUploader
+            key={`${activeSong.id}-first`}
+            title={activeSong.secondSheet ? "기본 악보 이미지" : "악보 이미지"}
             imageUrl={activeSong.sheetImageUrl}
             imageAdjust={activeSong.sheetImageAdjust}
             onImageChange={(sheetImageUrl) =>
@@ -179,6 +203,43 @@ function App() {
               updateActiveSong({ sheetImageAdjust })
             }
           />
+
+          {activeSong.secondSheet ? (
+            <ImageUploader
+              key={`${activeSong.id}-second`}
+              title="키업 악보 이미지"
+              imageUrl={activeSong.secondSheet.imageUrl}
+              imageAdjust={activeSong.secondSheet.imageAdjust}
+              onRemove={() => updateActiveSong({ secondSheet: null })}
+              onImageChange={(imageUrl) => updateSecondSheet({
+                imageUrl,
+                imageAdjust: DEFAULT_SHEET_IMAGE_ADJUST,
+              })}
+              onImageAdjustChange={(imageAdjust) => updateSecondSheet({ imageAdjust })}
+            >
+              <label className="field">
+                <span>키업 후 조성</span>
+                <input
+                  value={activeSong.secondSheet.key}
+                  placeholder="예: A"
+                  onChange={(event) => updateSecondSheet({ key: event.target.value })}
+                />
+              </label>
+              <p className="field-help">키업 악보를 올리면 기본 악보와 같은 A4 페이지에 표시됩니다.</p>
+            </ImageUploader>
+          ) : (
+            <button
+              type="button"
+              className="small-button"
+              onClick={() => updateActiveSong({ secondSheet: {
+                key: "",
+                imageUrl: "",
+                imageAdjust: DEFAULT_SHEET_IMAGE_ADJUST,
+              } })}
+            >
+              + 키업 악보 추가 (같은 페이지)
+            </button>
+          )}
 
           <SectionToggleList
             sections={SECTION_OPTIONS}
